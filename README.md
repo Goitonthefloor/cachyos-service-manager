@@ -114,12 +114,13 @@ pip install -e .
 
 
 Aus AUR installieren 
-
+Yay
 ```bash
-# mit  yay
 yay -S cachyos-service-manager
+```
 
-# mit paru
+Paru
+```bash
 paru -S cachyos-service-manager
 ```
 
@@ -128,13 +129,11 @@ Verwendung
 Nach der Installation kannst du die Anwendung starten:
 
 Qt6 Version:
-
-
 cachyos-service-manager-qt
+
 GTK4 Version:
-
-
 cachyos-service-manager-gtk
+
 Oder finde es im Anwendungsmenü unter System → CachyOS Service Manager
 ```
 
