@@ -13,6 +13,7 @@ Full-featured systemd service manager:
 import sys
 import threading
 from pathlib import Path
+from src.core.resource_monitor import ResourceMonitor, ServiceResources
 
 sys.path.insert(0, str(Path(__file__).parent / 'src'))
 
@@ -44,13 +45,14 @@ class ServiceTable(QTableWidget):
         self.main_window = main_window  # Store reference to MainWindow
         self.services = []
         self.setup_ui()
-    
+        
     def setup_ui(self):
         """Setup table UI."""
-        self.setColumnCount(6)
+        self.setColumnCount(8)  # 2 neue Spalten für CPU und RAM
         self.setHorizontalHeaderLabels([
-            "Status", "Service", "State", "Enabled", "Description", "Actions"
+            "Status", "Service", "State", "Enabled", "Description", "CPU %", "RAM MB", "Actions"
         ])
+
         
         # Column widths
         header = self.horizontalHeader()
@@ -60,9 +62,14 @@ class ServiceTable(QTableWidget):
         header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)
+        header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)
+        header.setSectionResizeMode(7, QHeaderView.ResizeMode.Fixed)
         
         self.setColumnWidth(0, 60)
-        self.setColumnWidth(5, 280)
+        self.setColumnWidth(5, 70)   # CPU
+        self.setColumnWidth(6, 80)   # RAM
+        self.setColumnWidth(7, 280)  # Actions (war vorher 5)
+
         
         self.verticalHeader().setVisible(False)
         self.setAlternatingRowColors(True)
@@ -107,7 +114,18 @@ class ServiceTable(QTableWidget):
             desc_item = QTableWidgetItem(service.description)
             desc_item.setFlags(desc_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
             self.setItem(row, 4, desc_item)
+            # CPU % (Spalte 5)
+            cpu_item = QTableWidgetItem("--")
+            cpu_item.setFlags(cpu_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+            cpu_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.setItem(row, 5, cpu_item)
             
+            # RAM MB (Spalte 6)
+            ram_item = QTableWidgetItem("--")
+            ram_item.setFlags(ram_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+            ram_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            self.setItem(row, 6, ram_item)
+
             # Actions
             actions_widget = QWidget()
             actions_layout = QHBoxLayout(actions_widget)
@@ -148,7 +166,7 @@ class ServiceTable(QTableWidget):
             actions_layout.addWidget(enable_btn)
             actions_layout.addWidget(logs_btn)
             
-            self.setCellWidget(row, 5, actions_widget)
+            self.setCellWidget(row, 7, actions_widget)  # War 5, jetzt 7 wegen 2 neuen Spalten
 
 
 class MainWindow(QMainWindow):
@@ -173,6 +191,8 @@ class MainWindow(QMainWindow):
         self.apply_plasma_theme()
         self.load_services()
         self.start_auto_refresh()
+        self.resource_monitor = ResourceMonitor()
+
     
     def setup_ui(self):
         """Setup UI."""
@@ -455,12 +475,62 @@ class MainWindow(QMainWindow):
         # Refresh after action
         QTimer.singleShot(1000, self.load_services)
     
-    def start_auto_refresh(self):
+     def start_auto_refresh(self):
         """Start auto-refresh."""
+        # Service refresh
         timer = QTimer()
         timer.timeout.connect(self.load_services)
         timer.start(30000)  # 30 seconds
+        
+        # Resource monitoring
+        self.resource_timer = QTimer()
+        self.resource_timer.timeout.connect(self.update_resources)
+        self.resource_timer.start(3000)  # 3 seconds
 
+
+    def update_resources(self):
+        """Update resource monitoring für aktive Services."""
+        # Nur aktive Services monitoren
+        active_services = [s.name for s in self.filtered_services 
+                          if s.state == ServiceState.ACTIVE]
+        
+        if not active_services:
+            return
+        
+        # Max 30 Services zur Performance
+        resources = self.resource_monitor.get_multiple_resources(active_services[:30])
+        
+        # Table aktualisieren
+        for row in range(self.service_table.rowCount()):
+            service_item = self.service_table.item(row, 1)  # Service name in Spalte 1
+            if not service_item:
+                continue
+            
+            service_name = service_item.text()
+            if service_name in resources:
+                res = resources[service_name]
+                
+                # CPU (Spalte 5)
+                cpu_item = QTableWidgetItem(f"{res.cpu_percent:.1f}")
+                cpu_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                if res.cpu_percent > 50:
+                    cpu_item.setForeground(QColor("#e74c3c"))
+                elif res.cpu_percent > 20:
+                    cpu_item.setForeground(QColor("#f39c12"))
+                else:
+                    cpu_item.setForeground(QColor("#27ae60"))
+                self.service_table.setItem(row, 5, cpu_item)
+                
+                # RAM (Spalte 6)
+                ram_item = QTableWidgetItem(f"{res.memory_mb:.1f}")
+                ram_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                if res.memory_mb > 500:
+                    ram_item.setForeground(QColor("#e74c3c"))
+                elif res.memory_mb > 100:
+                    ram_item.setForeground(QColor("#f39c12"))
+                else:
+                    ram_item.setForeground(QColor("#27ae60"))
+                self.service_table.setItem(row, 6, ram_item)
 
 def main():
     app = QApplication(sys.argv)
