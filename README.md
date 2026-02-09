@@ -2,7 +2,9 @@
 
 <div align="center">
 
-![CachyOS Logo](https://avatars.githubusercontent.com/u/79568445?s=200&v=4)
+![CSM Logo](https://user-gen-media-assets.s3.amazonaws.com/seedream_images/7a5e69cb-bffe-410b-80ca-4e9510e0efec.png)
+
+# CSM - CachyOS Service Manager
 
 **A modern, efficient service management tool for CachyOS**
 
@@ -10,6 +12,7 @@ Systemd integration · GUI & CLI · Real-time monitoring
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CachyOS](https://img.shields.io/badge/CachyOS-Optimized-teal)](https://cachyos.org)
+[![KDE Plasma](https://img.shields.io/badge/KDE-Plasma-1d99f3)](https://kde.org)
 
 </div>
 
@@ -25,7 +28,7 @@ CachyOS Service Manager ist ein leistungsstarkes Werkzeug zur Verwaltung von sys
 - ⚙️ **Service-Konfiguration** - Bearbeitung von Service-Dateien mit Syntax-Highlighting
 - 🚀 **Performance-Optimierung** - Ressourcen-Limits und CPU/Memory-Management
 - 🔐 **Sicherheit** - Systemd-Hardening-Optionen und Sandbox-Konfiguration
-- 🎨 **GUI & CLI** - Flexible Bedienung über grafische Oberfläche oder Kommandozeile
+- 🎨 **Dual UI** - KDE Plasma (Qt6) & GNOME (GTK4) Unterstützung
 - 📦 **Dependency-Management** - Visualisierung von Service-Abhängigkeiten
 
 ## 🏗️ Architektur
@@ -60,7 +63,7 @@ cachyos-service-manager/
 - CachyOS (oder Arch Linux mit CachyOS-Kernel)
 - Python 3.11+
 - systemd
-- GTK4 (für GUI)
+- **Qt6/PyQt6** (für KDE Plasma GUI - empfohlen) oder GTK4 (für GNOME)
 
 ### Aus AUR installieren (geplant)
 
@@ -73,18 +76,29 @@ yay -S cachyos-service-manager
 ```bash
 git clone https://github.com/Goitonthefloor/cachyos-service-manager.git
 cd cachyos-service-manager
-sudo ./install.sh
+
+# Für KDE Plasma (empfohlen für CachyOS)
+sudo pacman -S python python-pyqt6 polkit
+python desktop_test_plasma.py
+
+# Oder für GNOME
+sudo pacman -S python python-gobject gtk4 libadwaita polkit
+python desktop_test.py
 ```
 
 ## 💻 Verwendung
 
-### GUI starten
+### Desktop Test
 
 ```bash
-cachy-service-manager
+# KDE Plasma Version (empfohlen)
+python desktop_test_plasma.py
+
+# GNOME Version
+python desktop_test.py
 ```
 
-### CLI-Befehle
+### CLI-Befehle (in Entwicklung)
 
 ```bash
 # Service-Status anzeigen
@@ -114,17 +128,13 @@ cachy-services limit nginx --cpu 50 --memory 512M
 
 ## 📊 Screenshots
 
-### Hauptansicht
-![Main View](docs/screenshots/main-view.png)
-*Service-Übersicht mit Echtzeit-Status*
+### KDE Plasma Version
+![Plasma UI](docs/screenshots/plasma-main.png)
+*Service-Übersicht mit Breeze Dark Theme*
 
-### Log-Viewer
-![Log Viewer](docs/screenshots/log-viewer.png)
-*Integrierte Journal-Log-Anzeige*
-
-### Service-Editor
-![Service Editor](docs/screenshots/service-editor.png)
-*Bearbeitung von Service-Konfigurationen*
+### GNOME Version
+![GTK UI](docs/screenshots/gnome-main.png)
+*Service-Übersicht mit Adwaita Theme*
 
 ## 🔧 Konfiguration
 
@@ -183,8 +193,8 @@ mypy src/
 ### Technologie-Stack
 
 - **Backend**: Python 3.11+
-- **GUI**: GTK4 + Adwaita
-- **CLI**: Click
+- **GUI**: Qt6/PyQt6 (KDE Plasma) + GTK4/Adwaita (GNOME)
+- **CLI**: Click + Rich
 - **systemd-Integration**: python-systemd, dbus-python
 - **Tests**: pytest
 - **Code-Qualität**: ruff, mypy, black
@@ -238,6 +248,7 @@ Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE)
 
 - [CachyOS Team](https://cachyos.org) - Für die großartige Distribution
 - [systemd Project](https://systemd.io) - Für den Service Manager
+- [KDE Project](https://kde.org) - Für das wunderbare Plasma Desktop Environment
 - Alle Contributors und Tester
 
 ## 📞 Support
@@ -251,7 +262,9 @@ Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE)
 
 - [x] Basis-CLI-Funktionalität
 - [x] systemd-Integration
-- [ ] GTK4-GUI
+- [x] Desktop Test GUI (KDE Plasma & GNOME)
+- [x] KDE Plasma Breeze Theme Support
+- [ ] Vollständige GUI-Implementierung
 - [ ] Echtzeit-Monitoring
 - [ ] Service-Abhängigkeitsvisualisierung
 - [ ] AUR-Package
