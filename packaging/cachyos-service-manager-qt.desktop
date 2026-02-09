@@ -1,0 +1,18 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=CachyOS Service Manager (Qt)
+GenericName=Service Manager
+Comment=Manage systemd services with Qt6 interface
+Exec=python -m cachy_service_manager.qt_app
+Icon=cachyos-service-manager
+Terminal=false
+Categories=System;Settings;Qt;
+Keywords=systemd;service;daemon;system;admin;
+StartupNotify=true
+Actions=root;
+
+[Desktop Action root]
+Name=Run as Administrator
+Exec=pkexec python -m cachy_service_manager.qt_app
+Icon=cachyos-service-manager
