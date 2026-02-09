@@ -1,0 +1,272 @@
+# CachyOS Service Manager
+
+<div align="center">
+
+![CachyOS Logo](https://avatars.githubusercontent.com/u/79568445?s=200&v=4)
+
+**A modern, efficient service management tool for CachyOS**
+
+Systemd integration · GUI & CLI · Real-time monitoring
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![CachyOS](https://img.shields.io/badge/CachyOS-Optimized-teal)](https://cachyos.org)
+
+</div>
+
+## 📋 Übersicht
+
+CachyOS Service Manager ist ein leistungsstarkes Werkzeug zur Verwaltung von systemd-Services unter CachyOS. Es bietet sowohl eine grafische Benutzeroberfläche als auch eine CLI für die effiziente Verwaltung von Systemdiensten.
+
+### ✨ Features
+
+- 🎯 **Intuitive Service-Verwaltung** - Start, Stop, Restart und Status-Abfrage von Services
+- 📊 **Echtzeit-Monitoring** - Live-Überwachung von Service-Status und Ressourcenverbrauch
+- 🔍 **Log-Analyse** - Integrierte Journal-Log-Anzeige mit Filteroptionen
+- ⚙️ **Service-Konfiguration** - Bearbeitung von Service-Dateien mit Syntax-Highlighting
+- 🚀 **Performance-Optimierung** - Ressourcen-Limits und CPU/Memory-Management
+- 🔐 **Sicherheit** - Systemd-Hardening-Optionen und Sandbox-Konfiguration
+- 🎨 **GUI & CLI** - Flexible Bedienung über grafische Oberfläche oder Kommandozeile
+- 📦 **Dependency-Management** - Visualisierung von Service-Abhängigkeiten
+
+## 🏗️ Architektur
+
+```
+cachyos-service-manager/
+├── src/
+│   ├── core/              # Kern-Funktionalität
+│   │   ├── systemd.py     # systemd API Wrapper
+│   │   ├── service.py     # Service-Klassen
+│   │   └── monitor.py     # Monitoring-Engine
+│   ├── gui/               # GUI-Komponenten
+│   │   ├── main_window.py # Hauptfenster
+│   │   ├── service_view.py# Service-Liste
+│   │   └── log_viewer.py  # Log-Anzeige
+│   ├── cli/               # CLI-Interface
+│   │   ├── commands.py    # CLI-Befehle
+│   │   └── formatter.py   # Ausgabe-Formatierung
+│   └── utils/             # Hilfsfunktionen
+│       ├── config.py      # Konfiguration
+│       └── logger.py      # Logging
+├── tests/                 # Unit & Integration Tests
+├── docs/                  # Dokumentation
+├── config/                # Konfigurationsdateien
+└── scripts/               # Build & Install Scripts
+```
+
+## 🚀 Installation
+
+### Voraussetzungen
+
+- CachyOS (oder Arch Linux mit CachyOS-Kernel)
+- Python 3.11+
+- systemd
+- GTK4 (für GUI)
+
+### Aus AUR installieren (geplant)
+
+```bash
+yay -S cachyos-service-manager
+```
+
+### Aus Quellen installieren
+
+```bash
+git clone https://github.com/Goitonthefloor/cachyos-service-manager.git
+cd cachyos-service-manager
+sudo ./install.sh
+```
+
+## 💻 Verwendung
+
+### GUI starten
+
+```bash
+cachy-service-manager
+```
+
+### CLI-Befehle
+
+```bash
+# Service-Status anzeigen
+cachy-services status nginx
+
+# Service starten/stoppen
+cachy-services start nginx
+cachy-services stop nginx
+cachy-services restart nginx
+
+# Alle Services auflisten
+cachy-services list --all
+
+# Logs anzeigen
+cachy-services logs nginx --follow
+
+# Service aktivieren/deaktivieren (autostart)
+cachy-services enable nginx
+cachy-services disable nginx
+
+# Service-Abhängigkeiten anzeigen
+cachy-services deps nginx
+
+# Ressourcen-Limits setzen
+cachy-services limit nginx --cpu 50 --memory 512M
+```
+
+## 📊 Screenshots
+
+### Hauptansicht
+![Main View](docs/screenshots/main-view.png)
+*Service-Übersicht mit Echtzeit-Status*
+
+### Log-Viewer
+![Log Viewer](docs/screenshots/log-viewer.png)
+*Integrierte Journal-Log-Anzeige*
+
+### Service-Editor
+![Service Editor](docs/screenshots/service-editor.png)
+*Bearbeitung von Service-Konfigurationen*
+
+## 🔧 Konfiguration
+
+Die Hauptkonfiguration befindet sich in:
+```
+~/.config/cachyos-service-manager/config.yaml
+```
+
+### Beispiel-Konfiguration
+
+```yaml
+general:
+  theme: dark
+  auto_refresh: true
+  refresh_interval: 2  # Sekunden
+  
+monitoring:
+  enable_cpu_monitoring: true
+  enable_memory_monitoring: true
+  history_length: 300  # Datenpunkte
+
+cli:
+  color_output: true
+  verbose: false
+  
+security:
+  require_sudo: true
+  confirm_critical_actions: true
+```
+
+## 🛠️ Entwicklung
+
+### Entwicklungsumgebung einrichten
+
+```bash
+# Repository klonen
+git clone https://github.com/Goitonthefloor/cachyos-service-manager.git
+cd cachyos-service-manager
+
+# Virtual Environment erstellen
+python -m venv venv
+source venv/bin/activate
+
+# Dependencies installieren
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+
+# Tests ausführen
+pytest tests/
+
+# Code-Qualität prüfen
+ruff check src/
+mypy src/
+```
+
+### Technologie-Stack
+
+- **Backend**: Python 3.11+
+- **GUI**: GTK4 + Adwaita
+- **CLI**: Click
+- **systemd-Integration**: python-systemd, dbus-python
+- **Tests**: pytest
+- **Code-Qualität**: ruff, mypy, black
+
+## 📚 API-Dokumentation
+
+### SystemdManager Klasse
+
+```python
+from cachyos_service_manager.core import SystemdManager
+
+manager = SystemdManager()
+
+# Service-Status abrufen
+status = manager.get_service_status('nginx')
+
+# Service starten
+manager.start_service('nginx')
+
+# Logs abrufen
+logs = manager.get_logs('nginx', lines=100)
+
+# Ressourcen-Limits setzen
+manager.set_resource_limits('nginx', cpu_quota='50%', memory_limit='512M')
+```
+
+Weitere Details in der [API-Dokumentation](docs/API.md).
+
+## 🤝 Mitwirken
+
+Beiträge sind willkommen! Bitte beachte:
+
+1. Fork das Repository
+2. Erstelle einen Feature-Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit deine Änderungen (`git commit -m 'Add some AmazingFeature'`)
+4. Push zum Branch (`git push origin feature/AmazingFeature`)
+5. Öffne einen Pull Request
+
+### Richtlinien
+
+- Code-Style: PEP 8
+- Commit-Messages: Conventional Commits
+- Tests für neue Features erforderlich
+- Dokumentation aktualisieren
+
+## 📄 Lizenz
+
+Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE) für Details.
+
+## 🙏 Danksagungen
+
+- [CachyOS Team](https://cachyos.org) - Für die großartige Distribution
+- [systemd Project](https://systemd.io) - Für den Service Manager
+- Alle Contributors und Tester
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/Goitonthefloor/cachyos-service-manager/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Goitonthefloor/cachyos-service-manager/discussions)
+- **CachyOS Forum**: [forum.cachyos.org](https://forum.cachyos.org)
+- **Discord**: [CachyOS Discord](https://discord.gg/cachyos)
+
+## 🗺️ Roadmap
+
+- [x] Basis-CLI-Funktionalität
+- [x] systemd-Integration
+- [ ] GTK4-GUI
+- [ ] Echtzeit-Monitoring
+- [ ] Service-Abhängigkeitsvisualisierung
+- [ ] AUR-Package
+- [ ] Timer-Verwaltung
+- [ ] Socket-Verwaltung
+- [ ] Backup/Restore von Service-Konfigurationen
+- [ ] Performance-Profiling
+- [ ] Multi-Language Support
+
+---
+
+<div align="center">
+
+**Entwickelt mit ❤️ für die CachyOS-Community**
+
+[Website](https://cachyos.org) · [GitHub](https://github.com/CachyOS) · [Forum](https://forum.cachyos.org)
+
+</div>
