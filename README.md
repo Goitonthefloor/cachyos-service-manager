@@ -8,11 +8,12 @@
 
 **A modern, efficient service management tool for CachyOS**
 
-Systemd integration · GUI & CLI · Real-time monitoring
+Systemd integration · GUI & CLI · Real-time monitoring · **Service Groups**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CachyOS](https://img.shields.io/badge/CachyOS-Optimized-teal)](https://cachyos.org)
 [![KDE Plasma](https://img.shields.io/badge/KDE-Plasma-1d99f3)](https://kde.org)
+[![GTK4](https://img.shields.io/badge/GTK-4.0-4a90d9)](https://gtk.org)
 
 </div>
 
@@ -23,6 +24,7 @@ CachyOS Service Manager ist ein leistungsstarkes Werkzeug zur Verwaltung von sys
 ### ✨ Features
 
 - 🎯 **Intuitive Service-Verwaltung** - Start, Stop, Restart und Status-Abfrage von Services
+- 📦 **Service-Gruppen** - Organisiere Services in Gruppen und steuere sie gemeinsam
 - 📊 **Echtzeit-Monitoring** - Live-Überwachung von Service-Status und Ressourcenverbrauch
 - 🔍 **Log-Analyse** - Integrierte Journal-Log-Anzeige mit Filteroptionen
 - ⚙️ **Service-Konfiguration** - Bearbeitung von Service-Dateien mit Syntax-Highlighting
@@ -30,6 +32,50 @@ CachyOS Service Manager ist ein leistungsstarkes Werkzeug zur Verwaltung von sys
 - 🔐 **Sicherheit** - Systemd-Hardening-Optionen und Sandbox-Konfiguration
 - 🎨 **Dual UI** - KDE Plasma (Qt6) & GNOME (GTK4) Unterstützung
 - 📦 **Dependency-Management** - Visualisierung von Service-Abhängigkeiten
+
+## 🎯 Service Groups - NEU!
+
+### Was sind Service Groups?
+
+Service Groups ermöglichen es dir, mehrere zusammenhängende Services zu organisieren und gemeinsam zu verwalten:
+
+- 📦 **Gruppierung** - Fasse logisch zusammengehörige Services zusammen
+- ▶️ **Gruppen-Aktionen** - Starte, stoppe oder restarte alle Services einer Gruppe mit einem Klick
+- 🎨 **Visuelle Organisation** - Farbcodierung und Icons für bessere Übersicht
+- 💾 **Persistent** - Gruppen werden automatisch gespeichert
+- 📋 **Vordefinierte Templates** - 6 vorgefertigte Gruppen für häufige Szenarien
+
+### Vordefinierte Gruppen-Templates
+
+1. 🌍 **Web Services** - nginx, apache2, php-fpm
+2. 🗄️ **Database Services** - postgresql, mysql, redis, mongodb
+3. 🛠️ **Development** - docker, containerd, sshd
+4. 🌐 **Network Services** - NetworkManager, systemd-resolved, avahi-daemon
+5. 🖥️ **Desktop Services** - bluetooth, cups, pulseaudio
+6. ⚙️ **System Core** - systemd-journald, systemd-udevd, dbus
+
+### Anwendungsbeispiele
+
+**Web-Development Stack:**
+```
+Gruppe "Web Stack":
+  ▶️ nginx.service
+  ▶️ postgresql.service  
+  ▶️ redis.service
+  ▶️ php-fpm.service
+  
+→ Mit einem Klick: Gesamter Stack starten/stoppen
+```
+
+**Docker Development:**
+```
+Gruppe "Docker Dev":
+  ▶️ docker.service
+  ▶️ containerd.service
+  ▶️ sshd.service
+  
+→ Restart All: Komplette Dev-Umgebung neu starten
+```
 
 ## 🏗️ Architektur
 
@@ -39,6 +85,7 @@ cachyos-service-manager/
 │   ├── core/              # Kern-Funktionalität
 │   │   ├── systemd.py     # systemd API Wrapper
 │   │   ├── service.py     # Service-Klassen
+│   │   ├── service_group.py # Service-Gruppen Management
 │   │   └── monitor.py     # Monitoring-Engine
 │   ├── gui/               # GUI-Komponenten
 │   │   ├── main_window.py # Hauptfenster
@@ -63,7 +110,29 @@ cachyos-service-manager/
 - CachyOS (oder Arch Linux mit CachyOS-Kernel)
 - Python 3.11+
 - systemd
-- **Qt6/PyQt6** (für KDE Plasma GUI - empfohlen) oder GTK4 (für GNOME)
+- polkit (für Berechtigungen)
+
+**Für KDE Plasma (empfohlen):**
+- PyQt6
+
+**Für GNOME:**
+- GTK4
+- libadwaita
+- python-gobject
+
+### Schnellinstallation
+
+```bash
+# Repository klonen
+git clone https://github.com/Goitonthefloor/cachyos-service-manager.git
+cd cachyos-service-manager
+
+# Für KDE Plasma (empfohlen für CachyOS)
+sudo pacman -S python python-pyqt6 polkit
+
+# Oder für GNOME
+sudo pacman -S python python-gobject gtk4 libadwaita polkit
+```
 
 ### Aus AUR installieren (geplant)
 
@@ -71,34 +140,78 @@ cachyos-service-manager/
 yay -S cachyos-service-manager
 ```
 
-### Aus Quellen installieren
-
-```bash
-git clone https://github.com/Goitonthefloor/cachyos-service-manager.git
-cd cachyos-service-manager
-
-# Für KDE Plasma (empfohlen für CachyOS)
-sudo pacman -S python python-pyqt6 polkit
-python desktop_test_plasma.py
-
-# Oder für GNOME
-sudo pacman -S python python-gobject gtk4 libadwaita polkit
-python desktop_test.py
-```
-
 ## 💻 Verwendung
 
-### Desktop Test
+### 🎨 Desktop GUI
+
+#### Basis-Version (einzelne Services)
 
 ```bash
-# KDE Plasma Version (empfohlen)
+# KDE Plasma Version
 python desktop_test_plasma.py
 
-# GNOME Version
+# GNOME/GTK4 Version
 python desktop_test.py
 ```
 
-### CLI-Befehle (in Entwicklung)
+#### Service Groups Version (empfohlen)
+
+```bash
+# KDE Plasma mit Service Groups
+python desktop_test_plasma_groups.py
+
+# GNOME/GTK4 mit Service Groups
+python desktop_test_groups.py
+```
+
+### 📦 Service Groups verwalten
+
+#### Im GUI:
+
+1. **Neue Gruppe erstellen:**
+   - Klicke auf "+ New Group"
+   - Gib Name, Beschreibung und Icon ein
+   - Wähle Farbe (optional)
+   - Wähle Services aus der Liste
+   - Klicke "Create" / "OK"
+
+2. **Gruppen-Aktionen:**
+   - **▶ Start All** - Alle Services der Gruppe starten
+   - **⏹ Stop All** - Alle Services der Gruppe stoppen
+   - **⟳ Restart All** - Alle Services der Gruppe neu starten
+
+3. **Gruppen ein-/ausklappen:**
+   - Klicke auf den Gruppennamen zum Ein-/Ausklappen
+   - Status-Anzeige jedes einzelnen Services in der Gruppe
+
+#### Konfigurationsdatei:
+
+Gruppen werden automatisch gespeichert in:
+```
+~/.config/cachyos-service-manager/groups.json
+```
+
+Beispiel `groups.json`:
+```json
+{
+  "groups": [
+    {
+      "name": "Web Stack",
+      "description": "Complete web development stack",
+      "services": [
+        "nginx.service",
+        "postgresql.service",
+        "redis.service"
+      ],
+      "color": "#27ae60",
+      "icon": "🌍",
+      "auto_start_order": true
+    }
+  ]
+}
+```
+
+### 🖥️ CLI-Befehle (in Entwicklung)
 
 ```bash
 # Service-Status anzeigen
@@ -122,34 +235,48 @@ cachy-services disable nginx
 # Service-Abhängigkeiten anzeigen
 cachy-services deps nginx
 
-# Ressourcen-Limits setzen
-cachy-services limit nginx --cpu 50 --memory 512M
+# Gruppen verwalten
+cachy-services group create "Web Stack" nginx postgresql redis
+cachy-services group start "Web Stack"
+cachy-services group stop "Web Stack"
+cachy-services group list
 ```
 
 ## 📊 Screenshots
 
-### KDE Plasma Version
-![Plasma UI](docs/screenshots/plasma-main.png)
-*Service-Übersicht mit Breeze Dark Theme*
+### KDE Plasma Version mit Service Groups
+![Plasma Groups UI](docs/screenshots/plasma-groups.png)
+*Service-Gruppen mit Breeze Dark Theme und Farbcodierung*
 
-### GNOME Version
-![GTK UI](docs/screenshots/gnome-main.png)
-*Service-Übersicht mit Adwaita Theme*
+### GNOME Version mit Service Groups
+![GTK Groups UI](docs/screenshots/gtk-groups.png)
+*Service-Gruppen mit Adwaita Theme und Expandern*
+
+### Basis-Version
+![Plasma UI](docs/screenshots/plasma-main.png)
+*Einzelne Service-Verwaltung*
 
 ## 🔧 Konfiguration
 
 Die Hauptkonfiguration befindet sich in:
 ```
-~/.config/cachyos-service-manager/config.yaml
+~/.config/cachyos-service-manager/
+├── config.yaml          # Allgemeine Einstellungen
+└── groups.json          # Service-Gruppen Definitionen
 ```
 
-### Beispiel-Konfiguration
+### Beispiel-Konfiguration (`config.yaml`)
 
 ```yaml
 general:
   theme: dark
   auto_refresh: true
   refresh_interval: 2  # Sekunden
+  
+groups:
+  enable_groups: true
+  auto_load_templates: true
+  default_color: "#3daee9"
   
 monitoring:
   enable_cpu_monitoring: true
@@ -199,6 +326,15 @@ mypy src/
 - **Tests**: pytest
 - **Code-Qualität**: ruff, mypy, black
 
+### Test-Versionen
+
+| Datei | UI | Features | Zweck |
+|-------|-----|----------|-------|
+| `desktop_test_plasma.py` | Qt6/KDE | Basis-Service-Management | KDE Test |
+| `desktop_test.py` | GTK4/GNOME | Basis-Service-Management | GNOME Test |
+| `desktop_test_plasma_groups.py` | Qt6/KDE | **Service Groups** | KDE Groups Test |
+| `desktop_test_groups.py` | GTK4/GNOME | **Service Groups** | GNOME Groups Test |
+
 ## 📚 API-Dokumentation
 
 ### SystemdManager Klasse
@@ -219,6 +355,32 @@ logs = manager.get_logs('nginx', lines=100)
 
 # Ressourcen-Limits setzen
 manager.set_resource_limits('nginx', cpu_quota='50%', memory_limit='512M')
+```
+
+### ServiceGroupManager Klasse
+
+```python
+from cachyos_service_manager.core.service_group import ServiceGroupManager, GroupAction
+
+manager = ServiceGroupManager()
+
+# Gruppe erstellen
+group = manager.create_group(
+    name="Web Stack",
+    description="Development web stack",
+    services=["nginx.service", "postgresql.service"],
+    color="#27ae60",
+    icon="🌍"
+)
+
+# Alle Gruppen auflisten
+groups = manager.list_groups()
+
+# Gruppe abrufen
+group = manager.get_group("Web Stack")
+
+# Vordefinierte Templates
+templates = manager.get_predefined_groups()
 ```
 
 Weitere Details in der [API-Dokumentation](docs/API.md).
@@ -249,6 +411,7 @@ Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE)
 - [CachyOS Team](https://cachyos.org) - Für die großartige Distribution
 - [systemd Project](https://systemd.io) - Für den Service Manager
 - [KDE Project](https://kde.org) - Für das wunderbare Plasma Desktop Environment
+- [GNOME Project](https://gnome.org) - Für GTK4 und Adwaita
 - Alle Contributors und Tester
 
 ## 📞 Support
@@ -264,7 +427,12 @@ Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE)
 - [x] systemd-Integration
 - [x] Desktop Test GUI (KDE Plasma & GNOME)
 - [x] KDE Plasma Breeze Theme Support
+- [x] **Service Groups Feature**
+- [x] **Qt6 Groups GUI**
+- [x] **GTK4 Groups GUI**
+- [x] **Vordefinierte Gruppen-Templates**
 - [ ] Vollständige GUI-Implementierung
+- [ ] CLI Groups Support
 - [ ] Echtzeit-Monitoring
 - [ ] Service-Abhängigkeitsvisualisierung
 - [ ] AUR-Package
@@ -273,6 +441,7 @@ Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE)
 - [ ] Backup/Restore von Service-Konfigurationen
 - [ ] Performance-Profiling
 - [ ] Multi-Language Support
+- [ ] Import/Export von Gruppen
 
 ---
 
