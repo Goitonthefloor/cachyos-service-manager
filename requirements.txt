@@ -1,0 +1,17 @@
+# Core Dependencies
+python-systemd>=235
+dbus-python>=1.3.2
+PyGObject>=3.46.0
+
+# CLI
+click>=8.1.7
+rich>=13.7.0
+
+# Async
+aiofiles>=23.2.1
+
+# Configuration
+PyYAML>=6.0.1
+
+# Monitoring
+psutil>=5.9.8

@@ -1,0 +1,30 @@
+# CachyOS Service Manager Configuration
+
+general:
+  theme: dark  # dark, light, auto
+  auto_refresh: true
+  refresh_interval: 2  # seconds
+  language: de  # de, en
+
+monitoring:
+  enable_cpu_monitoring: true
+  enable_memory_monitoring: true
+  enable_io_monitoring: false
+  history_length: 300  # data points
+  update_interval: 1  # seconds
+
+cli:
+  color_output: true
+  verbose: false
+  pager: auto  # auto, always, never
+  
+security:
+  require_sudo: true
+  confirm_critical_actions: true
+  allowed_services: []  # empty = all services allowed
+  
+logging:
+  level: INFO  # DEBUG, INFO, WARNING, ERROR
+  file: ~/.local/share/cachyos-service-manager/app.log
+  max_size_mb: 10
+  backup_count: 3

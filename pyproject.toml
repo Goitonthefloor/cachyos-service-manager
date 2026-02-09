@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cachyos-service-manager"
+version = "0.1.0"
+description = "A modern service management tool for CachyOS"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "GPL-3.0-or-later"}
+authors = [
+    {name = "Rolf Greger", email = "Rolf_greger@web.de"}
+]
+keywords = ["cachyos", "systemd", "service-manager", "linux"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: System :: Systems Administration",
+]
+
+[project.urls]
+Homepage = "https://github.com/Goitonthefloor/cachyos-service-manager"
+Repository = "https://github.com/Goitonthefloor/cachyos-service-manager"
+Issues = "https://github.com/Goitonthefloor/cachyos-service-manager/issues"
+
+[project.scripts]
+cachy-service-manager = "cachyos_service_manager.gui.main:main"
+cachy-services = "cachyos_service_manager.cli.main:cli"
+
+[tool.setuptools]
+packages = ["cachyos_service_manager"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --cov=cachyos_service_manager --cov-report=html --cov-report=term"
