@@ -475,7 +475,7 @@ class MainWindow(QMainWindow):
         # Refresh after action
         QTimer.singleShot(1000, self.load_services)
     
-     def start_auto_refresh(self):
+    def start_auto_refresh(self):
         """Start auto-refresh."""
         # Service refresh
         timer = QTimer()
