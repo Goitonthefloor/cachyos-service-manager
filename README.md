@@ -114,6 +114,7 @@ pip install -e .
 
 
 Aus AUR installieren 
+
 Yay
 ```bash
 yay -S cachyos-service-manager
