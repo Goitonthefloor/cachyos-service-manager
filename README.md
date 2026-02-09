@@ -106,10 +106,11 @@ python desktop_test.py
 - python-gobject
 
 ### Schnellinstallation
-
+```bash
 git clone https://github.com/Goitonthefloor/cachyos-service-manager.git
 cd cachyos-service-manager
 pip install -e .
+```
 
 
 Aus AUR installieren 
@@ -123,17 +124,19 @@ paru -S cachyos-service-manager
 ```
 
 Verwendung
+```bash
 Nach der Installation kannst du die Anwendung starten:
 
 Qt6 Version:
 
-bash
+
 cachyos-service-manager-qt
 GTK4 Version:
 
-bash
+
 cachyos-service-manager-gtk
 Oder finde es im Anwendungsmenü unter System → CachyOS Service Manager
+```
 
 Features im Überblick:**
 
@@ -478,7 +481,7 @@ Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE)
 - [ ] CLI Groups Support
 - [ ] Erweiterte Monitoring-Features
 - [ ] Service-Abhängigkeitsvisualisierung
-- [ ] AUR-Package
+- [x] AUR-Package
 - [ ] Timer-Verwaltung
 - [ ] Socket-Verwaltung
 - [ ] Backup/Restore von Service-Konfigurationen
