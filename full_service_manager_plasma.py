@@ -485,24 +485,31 @@ class MainWindow(QMainWindow):
         # Resource monitoring
         self.resource_timer = QTimer()
         self.resource_timer.timeout.connect(self.update_resources)
-        self.resource_timer.start(3000)  # 3 seconds
-
+        self.resource_timer.start(5000)  # 5 seconds
 
     def update_resources(self):
         """Update resource monitoring für aktive Services."""
-        # Nur aktive Services monitoren
-        active_services = [s.name for s in self.filtered_services 
-                          if s.state == ServiceState.ACTIVE]
+        # Nur sichtbare Services monitoren
+        first_visible = self.service_table.verticalScrollBar().value()
+        viewport_height = self.service_table.viewport().height()
+        row_height = self.service_table.rowHeight(0) if self.service_table.rowCount() > 0 else 30
+        visible_rows = min(int(viewport_height / row_height) + 2, 10)  # Max 10 Services
         
-        if not active_services:
+        services_to_monitor = []
+        for row in range(first_visible, min(first_visible + visible_rows, self.service_table.rowCount())):
+            service_item = self.service_table.item(row, 1)
+            state_item = self.service_table.item(row, 2)
+            if service_item and state_item and state_item.text() == 'active':
+                services_to_monitor.append(service_item.text())
+        
+        if not services_to_monitor:
             return
         
-        # Max 30 Services zur Performance
-        resources = self.resource_monitor.get_multiple_resources(active_services[:30])
+        resources = self.resource_monitor.get_multiple_resources(services_to_monitor)
         
         # Table aktualisieren
         for row in range(self.service_table.rowCount()):
-            service_item = self.service_table.item(row, 1)  # Service name in Spalte 1
+            service_item = self.service_table.item(row, 1)
             if not service_item:
                 continue
             
@@ -531,6 +538,7 @@ class MainWindow(QMainWindow):
                 else:
                     ram_item.setForeground(QColor("#27ae60"))
                 self.service_table.setItem(row, 6, ram_item)
+
 
 def main():
     app = QApplication(sys.argv)
