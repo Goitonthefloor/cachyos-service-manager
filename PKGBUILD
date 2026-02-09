@@ -22,7 +22,7 @@ optdepends=(
   'python-pytest: for running tests'
 )
 source=("${pkgname}-${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz")
-sha256sums=('SKIP')
+sha256sums=('ad38fae376a17960212a61cc96567899433e49b3f219b4bcc759b0ebd7efcd2f')
 
 package() {
   cd "${srcdir}/${pkgname}-${pkgver}"
