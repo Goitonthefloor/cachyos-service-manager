@@ -107,39 +107,34 @@ python desktop_test.py
 
 ### Schnellinstallation
 
-```bash
-# Repository klonen
 git clone https://github.com/Goitonthefloor/cachyos-service-manager.git
 cd cachyos-service-manager
+pip install -e .
 
-# Für KDE Plasma (empfohlen für CachyOS)
-sudo pacman -S python python-pyqt6 polkit
 
-# Oder für GNOME
-sudo pacman -S python python-gobject gtk4 libadwaita polkit
-```
-
-### Aus AUR installieren (geplant)
+Aus AUR installieren 
 
 ```bash
+# mit  yay
 yay -S cachyos-service-manager
-```
 
-## 💻 Verwendung
+# mit paru
+paru -S cachyos-service-manager
 
-### 🎯 Full Service Manager (Empfohlen)
+Verwendung
+Nach der Installation kannst du die Anwendung starten:
 
-**Starte den vollständigen Service Manager:**
+Qt6 Version:
 
-```bash
-# Für KDE Plasma
-python full_service_manager_plasma.py
+bash
+cachyos-service-manager-qt
+GTK4 Version:
 
-# Für GNOME/GTK4
-python full_service_manager_gtk.py
-```
+bash
+cachyos-service-manager-gtk
+Oder finde es im Anwendungsmenü unter System → CachyOS Service Manager
 
-**Features im Überblick:**
+Features im Überblick:**
 
 1. **Alle Services anzeigen:**
    - Automatisches Laden aller systemd Services
