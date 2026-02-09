@@ -120,7 +120,7 @@ yay -S cachyos-service-manager
 
 # mit paru
 paru -S cachyos-service-manager
-```bash
+```
 
 Verwendung
 Nach der Installation kannst du die Anwendung starten:
