@@ -39,8 +39,9 @@ class ServiceSignals(QObject):
 class ServiceTable(QTableWidget):
     """Table widget for displaying services."""
     
-    def __init__(self, parent=None):
+    def __init__(self, main_window, parent=None):
         super().__init__(parent)
+        self.main_window = main_window  # Store reference to MainWindow
         self.services = []
         self.setup_ui()
     
@@ -116,30 +117,30 @@ class ServiceTable(QTableWidget):
             start_btn = QPushButton("▶")
             start_btn.setFixedSize(30, 24)
             start_btn.setStyleSheet("background-color: #27ae60; color: white; border: none; border-radius: 3px;")
-            start_btn.clicked.connect(lambda checked, s=service: self.parent().start_service(s))
+            start_btn.clicked.connect(lambda checked, s=service: self.main_window.start_service(s))
             
             stop_btn = QPushButton("■")
             stop_btn.setFixedSize(30, 24)
             stop_btn.setStyleSheet("background-color: #da4453; color: white; border: none; border-radius: 3px;")
-            stop_btn.clicked.connect(lambda checked, s=service: self.parent().stop_service(s))
+            stop_btn.clicked.connect(lambda checked, s=service: self.main_window.stop_service(s))
             
             restart_btn = QPushButton("⟳")
             restart_btn.setFixedSize(30, 24)
             restart_btn.setStyleSheet("background-color: #3daee9; color: white; border: none; border-radius: 3px;")
-            restart_btn.clicked.connect(lambda checked, s=service: self.parent().restart_service(s))
+            restart_btn.clicked.connect(lambda checked, s=service: self.main_window.restart_service(s))
             
             enable_btn = QPushButton("Enable" if not service.enabled else "Disable")
             enable_btn.setFixedSize(60, 24)
             enable_btn.setStyleSheet("background-color: #9b59b6; color: white; border: none; border-radius: 3px;")
             if not service.enabled:
-                enable_btn.clicked.connect(lambda checked, s=service: self.parent().enable_service(s))
+                enable_btn.clicked.connect(lambda checked, s=service: self.main_window.enable_service(s))
             else:
-                enable_btn.clicked.connect(lambda checked, s=service: self.parent().disable_service(s))
+                enable_btn.clicked.connect(lambda checked, s=service: self.main_window.disable_service(s))
             
             logs_btn = QPushButton("Logs")
             logs_btn.setFixedSize(45, 24)
             logs_btn.setStyleSheet("background-color: #f39c12; color: white; border: none; border-radius: 3px;")
-            logs_btn.clicked.connect(lambda checked, s=service: self.parent().show_logs(s))
+            logs_btn.clicked.connect(lambda checked, s=service: self.main_window.show_logs(s))
             
             actions_layout.addWidget(start_btn)
             actions_layout.addWidget(stop_btn)
@@ -268,8 +269,8 @@ class MainWindow(QMainWindow):
         
         layout.addLayout(controls)
         
-        # Service table
-        self.service_table = ServiceTable(self)
+        # Service table (pass self as main_window reference)
+        self.service_table = ServiceTable(main_window=self)
         layout.addWidget(self.service_table)
         
         return widget
