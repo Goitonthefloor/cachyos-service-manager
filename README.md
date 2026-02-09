@@ -479,7 +479,7 @@ Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE)
 - [x] **Qt6 Full Manager GUI**
 - [x] **GTK4 Full Manager GUI**
 - [ ] CLI Groups Support
-- [ ] Erweiterte Monitoring-Features
+- [x] Erweiterte Monitoring-Features
 - [ ] Service-Abhängigkeitsvisualisierung
 - [x] AUR-Package
 - [ ] Timer-Verwaltung
