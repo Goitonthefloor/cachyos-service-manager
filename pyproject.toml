@@ -34,7 +34,9 @@ cachy-service-manager = "cachyos_service_manager.gui.main:main"
 cachy-services = "cachyos_service_manager.cli.main:cli"
 
 [tool.setuptools]
-packages = ["cachyos_service_manager"]
+# Use src-layout: packages under src/
+package-dir = {"" = "src"}
+packages = find:
 
 [tool.ruff]
 line-length = 100
