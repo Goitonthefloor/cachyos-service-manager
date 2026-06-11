@@ -13,9 +13,10 @@ Full-featured systemd service manager:
 import sys
 import threading
 from pathlib import Path
-from src.core.resource_monitor import ResourceMonitor, ServiceResources
 
 sys.path.insert(0, str(Path(__file__).parent / 'src'))
+
+from src.core.resource_monitor import ResourceMonitor, ServiceResources
 
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
@@ -478,9 +479,9 @@ class MainWindow(QMainWindow):
     def start_auto_refresh(self):
         """Start auto-refresh."""
         # Service refresh
-        timer = QTimer()
-        timer.timeout.connect(self.load_services)
-        timer.start(30000)  # 30 seconds
+        self.refresh_timer = QTimer()
+        self.refresh_timer.timeout.connect(self.load_services)
+        self.refresh_timer.start(30000)  # 30 seconds
         
         # Resource monitoring
         self.resource_timer = QTimer()
