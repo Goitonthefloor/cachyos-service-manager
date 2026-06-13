@@ -86,6 +86,9 @@ class ServiceManager:
             if result.returncode != 0:
                 return []
             
+            # Batch fetch enabled states in ONE subprocess call instead of N+1
+            enabled_map = self._get_all_enabled_states()
+            
             services = []
             for line in result.stdout.strip().split('\n'):
                 if not line.strip():
@@ -99,8 +102,8 @@ class ServiceManager:
                     sub = parts[3]
                     desc = parts[4] if len(parts) > 4 else ""
                     
-                    # Get enabled status
-                    enabled = self._is_enabled(name)
+                    # Use batch lookup instead of per-service subprocess
+                    enabled = enabled_map.get(name, False)
                     
                     # Map state
                     state = self._map_state(active)
@@ -305,6 +308,31 @@ class ServiceManager:
         except Exception as e:
             return False, f"Error: {e}"
     
+    def _get_all_enabled_states(self) -> Dict[str, bool]:
+        """Batch-fetch enabled states for all services in one subprocess call.
+        
+        Returns:
+            Dictionary mapping service name -> enabled state
+        """
+        enabled_map: Dict[str, bool] = {}
+        try:
+            result = subprocess.run(
+                ['systemctl', 'list-unit-files', '--type=service', '--no-pager', '--no-legend'],
+                capture_output=True, text=True, timeout=10
+            )
+            if result.returncode == 0:
+                for line in result.stdout.strip().split('\n'):
+                    if not line.strip():
+                        continue
+                    parts = line.split()
+                    if len(parts) >= 2:
+                        name = parts[0]
+                        state = parts[1]
+                        enabled_map[name] = state in ('enabled', 'static')
+        except Exception:
+            pass
+        return enabled_map
+
     def _is_enabled(self, service_name: str) -> bool:
         """Check if service is enabled.
         
