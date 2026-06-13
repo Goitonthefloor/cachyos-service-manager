@@ -8,7 +8,7 @@ version = "0.2.2"
 description = "A modern service management tool for CachyOS"
 readme = "README.md"
 requires-python = ">=3.11"
-license = {text = "GPL-3.0-or-later"}
+license = "GPL-3.0-or-later"
 authors = [
     {name = "Rolf Greger", email = "Rolf_greger@web.de"}
 ]
@@ -16,7 +16,6 @@ keywords = ["cachyos", "systemd", "service-manager", "linux"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -36,7 +35,7 @@ cachy-services = "cachyos_service_manager.cli.main:cli"
 [tool.setuptools]
 # Use src-layout: packages under src/
 package-dir = {"" = "src"}
-packages = find:
+packages = ["cachyos_service_manager", "cachyos_service_manager.gui", "cachyos_service_manager.cli", "cachyos_service_manager.core", "cachyos_service_manager.utils"]
 
 [tool.ruff]
 line-length = 100

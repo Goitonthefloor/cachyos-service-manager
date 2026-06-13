@@ -3,13 +3,20 @@
 import click
 from rich.console import Console
 from rich.table import Table
+
+try:
+    from importlib.metadata import version
+    __version__ = version("cachyos-service-manager")
+except Exception:
+    __version__ = "0.0.0"
+
 from cachyos_service_manager.core.service_manager import ServiceManager, ServiceState
 
 console = Console()
 
 
 @click.group()
-@click.version_option(version="0.1.0")
+@click.version_option(version=__version__)
 def cli():
     """CachyOS Service Manager CLI."""
     pass

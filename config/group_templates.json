@@ -1,0 +1,46 @@
+{
+  "templates": [
+    {
+      "name": "Web Services",
+      "description": "Web server and related services",
+      "services": ["nginx.service", "apache2.service", "php-fpm.service"],
+      "color": "#27ae60",
+      "icon": "🌍"
+    },
+    {
+      "name": "Database Services",
+      "description": "Database servers",
+      "services": ["postgresql.service", "mysql.service", "redis.service", "mongodb.service"],
+      "color": "#e67e22",
+      "icon": "🗄️"
+    },
+    {
+      "name": "Development",
+      "description": "Development tools and services",
+      "services": ["docker.service", "containerd.service", "sshd.service"],
+      "color": "#9b59b6",
+      "icon": "🛠️"
+    },
+    {
+      "name": "Network Services",
+      "description": "Network and connectivity",
+      "services": ["NetworkManager.service", "systemd-resolved.service", "avahi-daemon.service"],
+      "color": "#3498db",
+      "icon": "🌐"
+    },
+    {
+      "name": "Desktop Services",
+      "description": "Desktop environment services",
+      "services": ["bluetooth.service", "cups.service", "pulseaudio.service"],
+      "color": "#f39c12",
+      "icon": "🖥️"
+    },
+    {
+      "name": "System Core",
+      "description": "Essential system services",
+      "services": ["systemd-journald.service", "systemd-udevd.service", "dbus.service"],
+      "color": "#e74c3c",
+      "icon": "⚙️"
+    }
+  ]
+}

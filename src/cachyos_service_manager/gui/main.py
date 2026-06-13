@@ -507,38 +507,46 @@ class MainWindow(QMainWindow):
             return
         
         resources = self.resource_monitor.get_multiple_resources(services_to_monitor)
-        
-        # Table aktualisieren
+
+        # Table aktualisieren - reuse existing items
         for row in range(self.service_table.rowCount()):
             service_item = self.service_table.item(row, 1)
             if not service_item:
                 continue
-            
+
             service_name = service_item.text()
             if service_name in resources:
                 res = resources[service_name]
-                
-                # CPU (Spalte 5)
-                cpu_item = QTableWidgetItem(f"{res.cpu_percent:.1f}")
-                cpu_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+
+                # CPU (Spalte 5) - reuse existing item
+                cpu_item = self.service_table.item(row, 5)
+                if cpu_item is None:
+                    cpu_item = QTableWidgetItem()
+                    cpu_item.setFlags(cpu_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                    cpu_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.service_table.setItem(row, 5, cpu_item)
+                cpu_item.setText(f"{res.cpu_percent:.1f}")
                 if res.cpu_percent > 50:
                     cpu_item.setForeground(QColor("#e74c3c"))
                 elif res.cpu_percent > 20:
                     cpu_item.setForeground(QColor("#f39c12"))
                 else:
                     cpu_item.setForeground(QColor("#27ae60"))
-                self.service_table.setItem(row, 5, cpu_item)
-                
-                # RAM (Spalte 6)
-                ram_item = QTableWidgetItem(f"{res.memory_mb:.1f}")
-                ram_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+
+                # RAM (Spalte 6) - reuse existing item
+                ram_item = self.service_table.item(row, 6)
+                if ram_item is None:
+                    ram_item = QTableWidgetItem()
+                    ram_item.setFlags(ram_item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+                    ram_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                    self.service_table.setItem(row, 6, ram_item)
+                ram_item.setText(f"{res.memory_mb:.1f}")
                 if res.memory_mb > 500:
                     ram_item.setForeground(QColor("#e74c3c"))
                 elif res.memory_mb > 100:
                     ram_item.setForeground(QColor("#f39c12"))
                 else:
                     ram_item.setForeground(QColor("#27ae60"))
-                self.service_table.setItem(row, 6, ram_item)
 
 
 def main():

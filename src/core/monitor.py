@@ -5,6 +5,12 @@ from dataclasses import dataclass
 from typing import List, Optional
 import asyncio
 import time
+import logging
+
+import dbus
+import dbus.exceptions
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -19,17 +25,17 @@ class Metrics:
 
 class MonitoringEngine:
     """Monitors service metrics in real-time.
-    
+
     Features:
     - CPU usage per service
     - Memory consumption
     - I/O statistics
     - Historical data
     """
-    
+
     def __init__(self, interval: float = 2.0):
         """Initialize monitoring engine.
-        
+
         Args:
             interval: Monitoring interval in seconds
         """
@@ -39,14 +45,14 @@ class MonitoringEngine:
         self._monitor_task: Optional[asyncio.Task] = None
         from .systemd import SystemdManager
         self.systemd_manager = SystemdManager()
-    
+
     async def start_monitoring(self, services: List[str]):
         """Start monitoring for specified services."""
         if self._monitoring:
             return
         self._monitoring = True
         self._monitor_task = asyncio.create_task(self._monitor_loop(services))
-    
+
     async def stop_monitoring(self):
         """Stop monitoring."""
         self._monitoring = False
@@ -56,7 +62,19 @@ class MonitoringEngine:
                 await self._monitor_task
             except asyncio.CancelledError:
                 pass
-    
+
+    def cleanup_stale_services(self, active_services: List[str]):
+        """Remove metrics history for services no longer being monitored.
+
+        Args:
+            active_services: List of currently active service names
+        """
+        active_set = set(active_services)
+        stale = set(self.metrics_history.keys()) - active_set
+        for service in stale:
+            del self.metrics_history[service]
+            logger.debug(f"Cleaned up metrics history for stale service: {service}")
+
     async def _monitor_loop(self, services: List[str]):
         """Main monitoring loop."""
         while self._monitoring:
@@ -65,13 +83,15 @@ class MonitoringEngine:
                     metrics = await self.get_current_metrics(service)
                     if metrics:
                         self.metrics_history[service].append(metrics)
+                # Periodic cleanup of stale services
+                self.cleanup_stale_services(services)
                 await asyncio.sleep(self.interval)
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                print(f"Error in monitoring loop: {e}")
+                logger.error(f"Error in monitoring loop: {e}")
                 await asyncio.sleep(self.interval)
-    
+
     async def get_current_metrics(self, service: str) -> Optional[Metrics]:
         """Get current metrics for a service."""
         try:
@@ -80,16 +100,16 @@ class MonitoringEngine:
                 service_name = f"{service}.service"
             else:
                 service_name = service
-            
+
             # Get the unit path
             unit_path = self.systemd_manager.manager_interface.GetUnit(service_name)
-            
+
             # Get the unit object
             unit_object = self.systemd_manager.bus.get_object('org.freedesktop.systemd1', unit_path)
-            
+
             # Get properties interface
             props_interface = dbus.Interface(unit_object, 'org.freedesktop.DBus.Properties')
-            
+
             # Try to get CPU usage (UserTime + SystemTime)
             cpu_usage = 0.0
             try:
@@ -101,7 +121,7 @@ class MonitoringEngine:
             except Exception:
                 # If we can't get detailed CPU time, use a placeholder
                 cpu_usage = 0.0
-            
+
             # Try to get memory usage
             memory_usage = 0
             try:
@@ -111,7 +131,7 @@ class MonitoringEngine:
             except Exception:
                 # If we can't get memory, use 0
                 memory_usage = 0
-            
+
             # Try to get I/O statistics (simplified)
             io_read = 0
             io_write = 0
@@ -124,7 +144,7 @@ class MonitoringEngine:
             except Exception:
                 # If I/O stats aren't available, leave as 0
                 pass
-            
+
             return Metrics(
                 timestamp=time.time(),
                 cpu_usage=cpu_usage,
@@ -134,16 +154,16 @@ class MonitoringEngine:
             )
         except Exception as e:
             # Service might not exist or other error
-            print(f"Error getting metrics for service {service}: {e}")
+            logger.warning(f"Error getting metrics for service {service}: {e}")
             return None
-    
+
     def get_history(self, service: str, duration: int = 60) -> List[Metrics]:
         """Get historical metrics.
-        
+
         Args:
             service: Service name
             duration: Duration in seconds
-            
+
         Returns:
             List of historical metrics
         """
