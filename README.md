@@ -14,12 +14,14 @@ Systemd integration · GUI & CLI · Real-time monitoring · **Service Groups** �
 [![CachyOS](https://img.shields.io/badge/CachyOS-Optimized-teal)](https://cachyos.org)
 [![KDE Plasma](https://img.shields.io/badge/KDE-Plasma-1d99f3)](https://kde.org)
 [![GTK4](https://img.shields.io/badge/GTK-4.0-4a90d9)](https://gtk.org)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB)](https://python.org)
+[![Tests](https://img.shields.io/badge/Tests-34%20passing-brightgreen)](tests/)
 
 </div>
 
 ## 📋 Übersicht
 
-CachyOS Service Manager ist ein leistungsstarkes Werkzeug zur Verwaltung von systemd-Services unter CachyOS. Es bietet sowohl eine grafische Benutzeroberfläche als auch eine CLI für die effiziente Verwaltung von Systemdiensten.
+CachyOS Service Manager ist ein leistungsstarkes Werkzeug zur Verwaltung von systemd-Services unter CachyOS. Es bietet sowohl eine grafische Benutzeroberfläche (Qt6 für KDE Plasma, GTK4 für GNOME) als auch eine vollständige CLI für die effiziente Verwaltung von Systemdiensten.
 
 ### ✨ Features
 
@@ -27,68 +29,18 @@ CachyOS Service Manager ist ein leistungsstarkes Werkzeug zur Verwaltung von sys
 - ⚡ **Service-Aktionen** - Start, Stop, Restart, Enable, Disable für jeden Service
 - 📦 **Service-Gruppen** - Organisiere Services in Gruppen und steuere sie gemeinsam
 - 🔍 **Suche & Filter** - Finde Services schnell mit Suchfunktion und Filtern
-- 📊 **Echtzeit-Monitoring** - Live-Überwachung von Service-Status
+- 📊 **Echtzeit-Monitoring** - Live-Überwachung von CPU/RAM pro Service (alle 5s)
 - 📜 **Log-Viewer** - Integrierte Journal-Log-Anzeige mit 200 Zeilen Historie
 - 📈 **Statistik-Dashboard** - Übersicht über aktive, inaktive und fehlerhafte Services
-- ⚙️ **Service-Konfiguration** - Detaillierte Service-Informationen
+- ⚙️ **Service-Konfiguration** - Detaillierte Service-Informationen (PID, Memory, CPU)
 - 🎨 **Dual UI** - KDE Plasma (Qt6) & GNOME (GTK4) Unterstützung
-- 🔄 **Auto-Refresh** - Automatische Aktualisierung aller 30 Sekunden
+- 🔄 **Auto-Refresh** - Automatische Service-Liste Aktualisierung aller 30s
 - 🔐 **Sicherheit** - Polkit-Integration für Berechtigungen
+- ⚡ **Performance** - Intelligentes Caching (2s TTL), Batch-PID-Fetching, QTableWidgetItem-Reuse
+- 📝 **Strukturiertes Logging** - Ersetzt alle print()-Statements
+- ✅ **34 Unit Tests** - Vollständige Testabdeckung der Kernfunktionalität
 
-## 🚀 Verfügbare Versionen
-
-### 1. **Full Service Manager** (empfohlen für tägliche Nutzung)
-
-**Komplette Service-Verwaltung mit allen Funktionen:**
-
-```bash
-# KDE Plasma Version
-python full_service_manager_plasma.py
-
-# GNOME/GTK4 Version
-python full_service_manager_gtk.py
-```
-
-**Features:**
-- ✅ Zeigt ALLE systemd Services an (nicht nur vordefinierte)
-- ✅ Start/Stop/Restart/Enable/Disable Buttons für jeden Service
-- ✅ Suche nach Services (Name oder Beschreibung)
-- ✅ Filter: All, Active, Inactive, Failed, Enabled
-- ✅ Live-Statistiken (Total, Active, Inactive, Failed, Enabled)
-- ✅ Log-Viewer Tab mit vollständigen Service-Logs
-- ✅ Tabellen-Ansicht mit Status-Indikatoren
-- ✅ Auto-Refresh alle 30 Sekunden
-
-### 2. **Service Groups Manager** (für Gruppen-Organisation)
-
-**Verwaltung von Service-Gruppen:**
-
-```bash
-# KDE Plasma Version
-python desktop_test_plasma_groups.py
-
-# GNOME/GTK4 Version
-python desktop_test_groups.py
-```
-
-**Features:**
-- ✅ Erstelle Service-Gruppen
-- ✅ Starte/Stoppe/Restarte ganze Gruppen
-- ✅ Farbcodierung und Icons
-- ✅ 6 vordefinierte Templates
-- ✅ Collapsible Gruppen-Ansicht
-
-### 3. **Basic Service Test** (für Entwicklung/Test)
-
-```bash
-# KDE Plasma Version
-python desktop_test_plasma.py
-
-# GNOME/GTK4 Version
-python desktop_test.py
-```
-
-## 📦 Installation
+## 🚀 Installation
 
 ### Voraussetzungen
 
@@ -106,74 +58,89 @@ python desktop_test.py
 - python-gobject
 
 ### Schnellinstallation
+
 ```bash
 git clone https://github.com/Goitonthefloor/cachyos-service-manager.git
 cd cachyos-service-manager
 pip install -e .
 ```
 
+### Aus AUR installieren
 
-Aus AUR installieren 
-
-Yay
+**Yay**
 ```bash
 yay -S cachyos-service-manager
 ```
 
-Paru
+**Paru**
 ```bash
 paru -S cachyos-service-manager
 ```
 
-Verwendung
-```bash
+### Verwendung
+
 Nach der Installation kannst du die Anwendung starten:
 
-Qt6 Version:
-cachyos-service-manager-qt
-
-GTK4 Version:
-cachyos-service-manager-gtk
-
-Oder finde es im Anwendungsmenü unter System → CachyOS Service Manager
+**Qt6 Version (KDE Plasma):**
+```bash
+cachy-service-manager
+# oder
+cachy-service-manager-qt
 ```
 
-Features im Überblick:**
+**GTK4 Version (GNOME):**
+```bash
+cachy-service-manager-gtk
+```
 
-1. **Alle Services anzeigen:**
-   - Automatisches Laden aller systemd Services
-   - Status-Indikatoren: 🟢 Aktiv, 🟡 Inaktiv, 🔴 Fehler
-   - Beschreibung jedes Services
-   - Enabled/Disabled Status
+**CLI:**
+```bash
+cachy-services --help
+```
 
-2. **Suchen & Filtern:**
-   - 🔍 Suchleiste: Suche nach Name oder Beschreibung
-   - Filter-Dropdown: All, Active, Inactive, Failed, Enabled
-   - Checkbox: "Show Inactive" zum Ein-/Ausblenden inaktiver Services
+Oder finde es im Anwendungsmenü unter **System → CachyOS Service Manager**
 
-3. **Service-Aktionen:**
-   - ▶️ **Start** - Service starten
-   - ⏹ **Stop** - Service stoppen
-   - ⟳ **Restart** - Service neu starten
-   - **Enable/Disable** - Autostart aktivieren/deaktivieren
-   - 📜 **Logs** - Service-Logs anzeigen (200 Zeilen)
+## 🖥️ GUI-Features im Detail
 
-4. **Statistik-Dashboard:**
-   - Total: Gesamtzahl der Services
-   - Active: Anzahl aktiver Services
-   - Inactive: Anzahl inaktiver Services
-   - Failed: Anzahl fehlerhafter Services
-   - Enabled: Anzahl beim Boot aktivierter Services
+### 1. Alle Services anzeigen
+- Automatisches Laden aller systemd Services
+- Status-Indikatoren: 🟢 Aktiv, 🟡 Inaktiv, 🔴 Fehler
+- Beschreibung jedes Services
+- Enabled/Disabled Status
 
-5. **Log-Viewer:**
-   - Separater Tab für Service-Logs
-   - 200 Zeilen Historie
-   - Monospace-Font für bessere Lesbarkeit
+### 2. Suchen & Filtern
+- 🔍 Suchleiste: Suche nach Name oder Beschreibung
+- Filter-Dropdown: All, Active, Inactive, Failed, Enabled
+- Checkbox: "Show Inactive" zum Ein-/Ausblenden inaktiver Services
+
+### 3. Service-Aktionen (pro Service)
+- ▶️ **Start** - Service starten
+- ⏹ **Stop** - Service stoppen
+- ⟳ **Restart** - Service neu starten
+- **Enable/Disable** - Autostart aktivieren/deaktivieren
+- 📜 **Logs** - Service-Logs anzeigen (200 Zeilen)
+
+### 4. Echtzeit-Ressourcen-Monitoring
+- **CPU %** pro Service (Farbcodiert: 🟢 <20%, 🟡 20-50%, 🔴 >50%)
+- **RAM MB** pro Service (Farbcodiert: 🟢 <100MB, 🟡 100-500MB, 🔴 >500MB)
+- Automatische Aktualisierung aller 5 Sekunden für sichtbare Services
+- Batch-Abfrage aller PIDs in **einem** systemctl-Aufruf
+
+### 5. Statistik-Dashboard
+- **Total**: Gesamtzahl der Services
+- **Active**: Anzahl aktiver Services
+- **Inactive**: Anzahl inaktiver Services
+- **Failed**: Anzahl fehlerhafter Services
+- **Enabled**: Anzahl beim Boot aktivierter Services
+
+### 6. Log-Viewer
+- Separater Tab für Service-Logs
+- 200 Zeilen Historie
+- Monospace-Font für bessere Lesbarkeit
 
 ### 📦 Service Groups verwalten
 
 #### Im GUI:
-
 1. **Neue Gruppe erstellen:**
    - Klicke auf "+ New Group"
    - Gib Name, Beschreibung und Icon ein
@@ -190,8 +157,7 @@ Features im Überblick:**
    - Klicke auf den Gruppennamen zum Ein-/Ausklappen
    - Status-Anzeige jedes einzelnen Services in der Gruppe
 
-### 🎯 Service Groups - Vordefinierte Templates
-
+#### 🎯 Vordefinierte Templates (aus `config/group_templates.json`)
 1. 🌍 **Web Services** - nginx, apache2, php-fpm
 2. 🗄️ **Database Services** - postgresql, mysql, redis, mongodb
 3. 🛠️ **Development** - docker, containerd, sshd
@@ -199,13 +165,15 @@ Features im Überblick:**
 5. 🖥️ **Desktop Services** - bluetooth, cups, pulseaudio
 6. ⚙️ **System Core** - systemd-journald, systemd-udevd, dbus
 
-### 💡 Anwendungsbeispiele
+**Eigene Templates:** Erstelle `~/.config/cachyos-service-manager/group_templates.json` für benutzerdefinierte Vorlagen.
+
+#### 💡 Anwendungsbeispiele
 
 **Web-Development Stack:**
 ```
 Gruppe "Web Stack":
   ▶️ nginx.service
-  ▶️ postgresql.service  
+  ▶️ postgresql.service 
   ▶️ redis.service
   ▶️ php-fpm.service
   
@@ -222,9 +190,12 @@ Gruppe "Docker Dev":
 → Restart All: Komplette Dev-Umgebung neu starten
 ```
 
-### 🖥️ CLI-Befehle (in Entwicklung)
+## ⌨️ CLI-Befehle
 
 ```bash
+# Version anzeigen
+cachy-services --version
+
 # Service-Status anzeigen
 cachy-services status nginx
 
@@ -236,14 +207,22 @@ cachy-services restart nginx
 # Alle Services auflisten
 cachy-services list --all
 
+# Nur aktive Services
+cachy-services list
+
+# Nach Typ filtern
+cachy-services list --type timer
+cachy-services list --type socket
+
 # Logs anzeigen
-cachy-services logs nginx --follow
+cachy-services logs nginx
+cachy-services logs nginx --lines 100
 
 # Service aktivieren/deaktivieren (autostart)
 cachy-services enable nginx
 cachy-services disable nginx
 
-# Gruppen verwalten
+# Gruppen verwalten (in Entwicklung)
 cachy-services group create "Web Stack" nginx postgresql redis
 cachy-services group start "Web Stack"
 cachy-services group stop "Web Stack"
@@ -254,59 +233,51 @@ cachy-services group list
 
 ```
 cachyos-service-manager/
+├── config/
+│   └── group_templates.json      # Externe Gruppen-Templates
 ├── src/
-│   ├── core/              # Kern-Funktionalität
-│   │   ├── systemd.py     # systemd API Wrapper
-│   │   ├── service.py     # Service-Klassen
-│   │   ├── service_manager.py # Vollständiger Service Manager
-│   │   ├── service_group.py # Service-Gruppen Management
-│   │   └── monitor.py     # Monitoring-Engine
-│   ├── gui/               # GUI-Komponenten
-│   │   ├── main_window.py # Hauptfenster
-│   │   ├── service_view.py# Service-Liste
-│   │   └── log_viewer.py  # Log-Anzeige
-│   ├── cli/               # CLI-Interface
-│   │   ├── commands.py    # CLI-Befehle
-│   │   └── formatter.py   # Ausgabe-Formatierung
-│   └── utils/             # Hilfsfunktionen
-│       ├── config.py      # Konfiguration
-│       └── logger.py      # Logging
-├── full_service_manager_plasma.py # Vollständiger Manager (Qt6)
-├── full_service_manager_gtk.py    # Vollständiger Manager (GTK4)
-├── desktop_test_plasma_groups.py  # Gruppen-Manager (Qt6)
-├── desktop_test_groups.py         # Gruppen-Manager (GTK4)
-├── tests/                 # Unit & Integration Tests
-├── docs/                  # Dokumentation
-└── README.md             # Diese Datei
+│   ├── cachyos_service_manager/
+│   │   ├── gui/                  # Qt6 GUI (KDE Plasma)
+│   │   │   └── main.py           # Hauptfenster mit Resource Monitoring
+│   │   └── cli/
+│   │       └── main.py           # Click-basierte CLI
+│   ├── core/                     # Kern-Funktionalität
+│   │   ├── systemd.py            # Async systemd D-Bus API Wrapper
+│   │   ├── service.py            # Service Dataclasses & ServiceState Enum
+│   │   ├── service_manager.py    # Sync ServiceManager (subprocess-based)
+│   │   ├── service_group.py      # ServiceGroup & ServiceGroupManager
+│   │   ├── resource_monitor.py   # CPU/RAM Monitoring (psutil + batch PID)
+│   │   ├── monitor.py            # Async MonitoringEngine (D-Bus)
+│   │   └── __init__.py
+│   ├── cli/                      # CLI-Modul (Legacy)
+│   └── utils/                    # Hilfsfunktionen
+├── tests/
+│   └── test_core.py              # 34 Unit Tests
+├── pyproject.toml                # Package-Konfiguration
+├── requirements.txt              # Dependencies
+└── README.md
 ```
-
-## 📊 Verfügbare Programme
-
-| Datei | UI | Features | Verwendung |
-|-------|-----|----------|------------|
-| `full_service_manager_plasma.py` | Qt6/KDE | **Alle Services + Volle Kontrolle** | **Empfohlen für tägliche Nutzung** |
-| `full_service_manager_gtk.py` | GTK4/GNOME | **Alle Services + Volle Kontrolle** | **Empfohlen für GNOME** |
-| `desktop_test_plasma_groups.py` | Qt6/KDE | Service Groups | Gruppen-Verwaltung |
-| `desktop_test_groups.py` | GTK4/GNOME | Service Groups | Gruppen-Verwaltung |
-| `desktop_test_plasma.py` | Qt6/KDE | Basic Test | Entwicklung |
-| `desktop_test.py` | GTK4/GNOME | Basic Test | Entwicklung |
 
 ## 📚 API-Dokumentation
 
-### ServiceManager Klasse (NEU!)
+### ServiceManager Klasse (Sync, subprocess-basiert)
 
 ```python
-from cachyos_service_manager.core.service_manager import ServiceManager, ServiceType
+from core.service_manager import ServiceManager, ServiceType
 
-manager = ServiceManager()
+manager = ServiceManager(
+    timeout=5.0,           # Timeout für list/status Operationen
+    action_timeout=10.0,   # Timeout für Start/Stop/Restart/Enable/Disable
+    cache_ttl=2.0          # Cache TTL in Sekunden
+)
 
-# Alle Services auflisten
+# Alle Services auflisten (mit Caching!)
 services = manager.list_all_services(
     service_type=ServiceType.SERVICE,
     show_inactive=True
 )
 
-# Service-Status abrufen
+# Service-Status abrufen (detailliert)
 service_info = manager.get_service_status('nginx')
 
 # Service-Aktionen
@@ -325,14 +296,23 @@ filtered = manager.search_services('docker', services)
 # Statistiken
 stats = manager.get_stats(services)
 # Returns: {'total': 150, 'active': 45, 'inactive': 100, 'failed': 5, 'enabled': 50}
+
+# Health Check
+if manager.check_systemd_accessible():
+    print("systemd ist erreichbar")
 ```
 
 ### ServiceGroupManager Klasse
 
 ```python
-from cachyos_service_manager.core.service_group import ServiceGroupManager, GroupAction
+from core.service_group import ServiceGroupManager
+from pathlib import Path
 
-manager = ServiceGroupManager()
+# Mit benutzerdefinierten Template-Datei
+manager = ServiceGroupManager(
+    config_path=Path("~/.config/cachyos-service-manager/groups.json"),
+    templates_path=Path("config/group_templates.json")
+)
 
 # Gruppe erstellen
 group = manager.create_group(
@@ -349,22 +329,60 @@ groups = manager.list_groups()
 # Gruppe abrufen
 group = manager.get_group("Web Stack")
 
-# Vordefinierte Templates
+# Vordefinierte Templates laden (aus JSON!)
 templates = manager.get_predefined_groups()
+
+# Gruppe aus Template erstellen
+group = manager.create_group_from_template("Web Services")
 ```
 
-Weitere Details in der [API-Dokumentation](docs/API.md).
+### ResourceMonitor Klasse
+
+```python
+from core.resource_monitor import ResourceMonitor
+
+monitor = ResourceMonitor()
+
+# Einzelner Service
+resources = monitor.get_service_resources("nginx.service")
+# Returns: ServiceResources(cpu_percent=5.2, memory_mb=45.3, memory_percent=1.2, process_count=3)
+
+# Mehrere Services (BATCH - 1 systemctl Aufruf!)
+resources = monitor.get_multiple_resources([
+    "nginx.service",
+    "postgresql.service",
+    "redis.service"
+])
+# Returns: Dict[str, ServiceResources]
+```
 
 ## 🔧 Konfiguration
 
 Die Hauptkonfiguration befindet sich in:
 ```
 ~/.config/cachyos-service-manager/
-├── config.yaml          # Allgemeine Einstellungen
-└── groups.json          # Service-Gruppen Definitionen
+├── config.yaml          # Allgemeine Einstellungen (geplant)
+├── groups.json          # Service-Gruppen Definitionen
+└── group_templates.json # Benutzerdefinierte Templates (optional)
 ```
 
-### Beispiel-Konfiguration (`config.yaml`)
+### Externe Templates (`config/group_templates.json`)
+
+```json
+{
+  "templates": [
+    {
+      "name": "My Custom Stack",
+      "description": "Mein Entwicklungssetup",
+      "services": ["docker.service", "redis.service", "nginx.service"],
+      "color": "#9b59b6",
+      "icon": "🛠️"
+    }
+  ]
+}
+```
+
+### Beispiel-Konfiguration (`config.yaml`) - Geplant
 
 ```yaml
 general:
@@ -381,6 +399,8 @@ monitoring:
   enable_cpu_monitoring: true
   enable_memory_monitoring: true
   history_length: 300  # Datenpunkte
+  resource_refresh_interval: 5  # Sekunden
+  max_services_to_monitor: 10
 
 cli:
   color_output: true
@@ -408,22 +428,56 @@ source venv/bin/activate
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 
+# Package im Editiermodus installieren
+pip install -e .
+
 # Tests ausführen
-pytest tests/
+pytest tests/ -v
 
 # Code-Qualität prüfen
 ruff check src/
 mypy src/
 ```
 
+### Tests
+
+```bash
+# Alle Tests
+pytest tests/
+
+# Mit Coverage
+pytest tests/ --cov=core --cov-report=html
+
+# Einzelnen Test
+pytest tests/test_core.py::TestServiceManager::test_map_state -v
+```
+
+**Test-Ergebnisse:** 34 Tests passing ✅
+
 ### Technologie-Stack
 
-- **Backend**: Python 3.11+
-- **GUI**: Qt6/PyQt6 (KDE Plasma) + GTK4/Adwaita (GNOME)
-- **CLI**: Click + Rich
-- **systemd-Integration**: python-systemd, dbus-python
-- **Tests**: pytest
-- **Code-Qualität**: ruff, mypy, black
+| Kategorie | Technologie |
+|-----------|-------------|
+| **Backend** | Python 3.11+ |
+| **GUI (KDE)** | Qt6/PyQt6 |
+| **GUI (GNOME)** | GTK4/Adwaita |
+| **CLI** | Click + Rich |
+| **systemd (Sync)** | subprocess + systemctl |
+| **systemd (Async)** | dbus-python |
+| **Monitoring** | psutil |
+| **Tests** | pytest + pytest-cov |
+| **Code-Qualität** | ruff, mypy, black |
+| **Packaging** | setuptools (src-layout) |
+
+## 📊 Performance-Optimierungen (v0.2.2+)
+
+| Optimierung | Vorher | Nachher |
+|-------------|--------|---------|
+| **CPU-Messung** | `cpu_percent(interval=0)` → immer 0% | Zwei-Sample-Methode → korrekte Werte |
+| **PID-Abfrage** | N subprocess-Aufrufe | **1 Batch-Aufruf** für alle Services |
+| **Service-Liste** | Immer frisch von systemd | **2s TTL Cache** |
+| **GUI Tabellen-Update** | Neue QTableWidgetItems alle 5s | **Items wiederverwenden** (in-place update) |
+| **Memory Leak** | MonitoringEngine sammelte stale Services | **cleanup_stale_services()** im Loop |
 
 ## 🤝 Mitwirken
 
@@ -431,20 +485,21 @@ Beiträge sind willkommen! Bitte beachte:
 
 1. Fork das Repository
 2. Erstelle einen Feature-Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit deine Änderungen (`git commit -m 'Add some AmazingFeature'`)
+3. Commit deine Änderungen (`git commit -m 'feat: Add some AmazingFeature'`)
 4. Push zum Branch (`git push origin feature/AmazingFeature`)
 5. Öffne einen Pull Request
 
 ### Richtlinien
 
-- Code-Style: PEP 8
-- Commit-Messages: Conventional Commits
-- Tests für neue Features erforderlich
-- Dokumentation aktualisieren
+- **Code-Style:** PEP 8 (ruff)
+- **Type Hints:** mypy strict mode
+- **Commit-Messages:** Conventional Commits (`feat:`, `fix:`, `perf:`, `docs:`, etc.)
+- **Tests:** Für neue Features erforderlich
+- **Dokumentation:** README und Docstrings aktualisieren
 
 ## 📄 Lizenz
 
-Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE) für Details.
+Dieses Projekt ist unter der **GPL-3.0-or-later** Lizenz lizenziert. Siehe [LICENSE](LICENSE) für Details.
 
 ## 🙏 Danksagungen
 
@@ -464,31 +519,27 @@ Dieses Projekt ist unter der GPL-3.0 Lizenz lizenziert. Siehe [LICENSE](LICENSE)
 ## 🗺️ Roadmap
 
 - [x] Basis-CLI-Funktionalität
-- [x] systemd-Integration
-- [x] Desktop Test GUI (KDE Plasma & GNOME)
-- [x] KDE Plasma Breeze Theme Support
-- [x] **Service Groups Feature**
-- [x] **Qt6 Groups GUI**
-- [x] **GTK4 Groups GUI**
-- [x] **Vordefinierte Gruppen-Templates**
-- [x] **Vollständiger Service Manager (alle Services)**
-- [x] **Service-Aktionen (Start/Stop/Restart/Enable/Disable)**
+- [x] systemd-Integration (Sync + Async)
+- [x] Dual GUI (Qt6/KDE + GTK4/GNOME)
+- [x] **Service Groups Feature** mit externen Templates
+- [x] **Vollständiger Service Manager** (alle Services + volle Kontrolle)
+- [x] **Echtzeit-Ressourcen-Monitoring** (CPU/RAM)
 - [x] **Suche & Filter-Funktionalität**
 - [x] **Log-Viewer Integration**
 - [x] **Statistik-Dashboard**
-- [x] **Qt6 Full Manager GUI**
-- [x] **GTK4 Full Manager GUI**
-- [ ] CLI Groups Support
-- [x] Erweiterte Monitoring-Features
+- [x] **Performance-Optimierungen** (Caching, Batch, Reuse)
+- [x] **Strukturiertes Logging**
+- [x] **34 Unit Tests**
+- [x] **AUR-Package**
+- [ ] CLI Groups Support (vollständig)
 - [ ] Service-Abhängigkeitsvisualisierung
-- [x] AUR-Package
 - [ ] Timer-Verwaltung
 - [ ] Socket-Verwaltung
 - [ ] Backup/Restore von Service-Konfigurationen
-- [ ] Performance-Profiling
-- [ ] Multi-Language Support
+- [ ] Multi-Language Support (i18n)
 - [ ] Import/Export von Gruppen
 - [ ] Systemd Unit Editor
+- [ ] systemd-analyze Integration
 
 ---
 
