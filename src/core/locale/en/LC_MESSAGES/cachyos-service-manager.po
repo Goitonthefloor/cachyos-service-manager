@@ -1,0 +1,278 @@
+# English translations for CachyOS Service Manager
+msgid ""
+msgstr ""
+"Project-Id-Version: cachyos-service-manager 0.2.2\n"
+"Report-Msgid-Bugs-To: https://github.com/Goitonthefloor/cachyos-service-manager/issues\n"
+"POT-Creation-Date: 2025-06-14\n"
+"PO-Revision-Date: 2025-06-14\n"
+"Last-Translator: CachyOS Team\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# CLI Messages
+msgid "CachyOS Service Manager CLI."
+msgstr "CachyOS Service Manager CLI."
+
+msgid "List all services."
+msgstr "List all services."
+
+msgid "Show service status."
+msgstr "Show service status."
+
+msgid "Start a service."
+msgstr "Start a service."
+
+msgid "Stop a service."
+msgstr "Stop a service."
+
+msgid "Restart a service."
+msgstr "Restart a service."
+
+msgid "Enable a service (autostart)."
+msgstr "Enable a service (autostart)."
+
+msgid "Disable a service (no autostart)."
+msgstr "Disable a service (no autostart)."
+
+msgid "Show service logs."
+msgstr "Show service logs."
+
+msgid "Manage service groups."
+msgstr "Manage service groups."
+
+msgid "Run systemd-analyze for boot performance analysis."
+msgstr "Run systemd-analyze for boot performance analysis."
+
+msgid "Backup service unit files and enabled state to JSON."
+msgstr "Backup service unit files and enabled state to JSON."
+
+msgid "Restore service unit files and enabled state from JSON backup."
+msgstr "Restore service unit files and enabled state from JSON backup."
+
+msgid "Show unit file content for a service."
+msgstr "Show unit file content for a service."
+
+msgid "Show service dependencies."
+msgstr "Show service dependencies."
+
+msgid "Show reverse dependencies (what depends on this service)."
+msgstr "Show reverse dependencies (what depends on this service)."
+
+msgid "List all systemd timers."
+msgstr "List all systemd timers."
+
+msgid "Show timer status."
+msgstr "Show timer status."
+
+msgid "Show next timer activations."
+msgstr "Show next timer activations."
+
+msgid "List all systemd sockets."
+msgstr "List all systemd sockets."
+
+msgid "Show socket status."
+msgstr "Show socket status."
+
+# Status Messages
+msgid "No services found."
+msgstr "No services found."
+
+msgid "No timers found."
+msgstr "No timers found."
+
+msgid "No sockets found."
+msgstr "No sockets found."
+
+msgid "No groups found."
+msgstr "No groups found."
+
+msgid "No timer activations found."
+msgstr "No timer activations found."
+
+msgid "No logs available."
+msgstr "No logs available."
+
+msgid "Service '%s' not found."
+msgstr "Service '%s' not found."
+
+msgid "Timer '%s' not found."
+msgstr "Timer '%s' not found."
+
+msgid "Socket '%s' not found."
+msgstr "Socket '%s' not found."
+
+msgid "Group '%s' not found"
+msgstr "Group '%s' not found"
+
+msgid "Template '%s' not found"
+msgstr "Template '%s' not found"
+
+# Success Messages
+msgid "Successfully started %s"
+msgstr "Successfully started %s"
+
+msgid "Successfully stopped %s"
+msgstr "Successfully stopped %s"
+
+msgid "Successfully restarted %s"
+msgstr "Successfully restarted %s"
+
+msgid "Successfully enabled %s"
+msgstr "Successfully enabled %s"
+
+msgid "Successfully disabled %s"
+msgstr "Successfully disabled %s"
+
+msgid "Created group '%s' with %d services"
+msgstr "Created group '%s' with %d services"
+
+msgid "Deleted group '%s'"
+msgstr "Deleted group '%s'"
+
+msgid "Created group '%s' from template with %d services"
+msgstr "Created group '%s' from template with %d services"
+
+msgid "Exported group '%s' to %s"
+msgstr "Exported group '%s' to %s"
+
+msgid "Imported group '%s'"
+msgstr "Imported group '%s'"
+
+msgid "Successfully backed up %d services to %s"
+msgstr "Successfully backed up %d services to %s"
+
+msgid "Successfully restored %d services from %s"
+msgstr "Successfully restored %d services from %s"
+
+# Error Messages
+msgid "Error: %s"
+msgstr "Error: %s"
+
+msgid "Timeout executing %s on %s"
+msgstr "Timeout executing %s on %s"
+
+msgid "Failed to %s %s: %s"
+msgstr "Failed to %s %s: %s"
+
+msgid "systemd-analyze not found. Is systemd installed?"
+msgstr "systemd-analyze not found. Is systemd installed?"
+
+msgid "Timeout running systemd-analyze"
+msgstr "Timeout running systemd-analyze"
+
+# Status Display
+msgid "active"
+msgstr "active"
+
+msgid "inactive"
+msgstr "inactive"
+
+msgid "failed"
+msgstr "failed"
+
+msgid "activating"
+msgstr "activating"
+
+msgid "deactivating"
+msgstr "deactivating"
+
+msgid "unknown"
+msgstr "unknown"
+
+# Table Headers
+msgid "Name"
+msgstr "Name"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Enabled"
+msgstr "Enabled"
+
+msgid "Description"
+msgstr "Description"
+
+msgid "CPU %"
+msgstr "CPU %"
+
+msgid "RAM MB"
+msgstr "RAM MB"
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "Left"
+msgstr "Left"
+
+msgid "Last"
+msgstr "Last"
+
+msgid "Passed"
+msgstr "Passed"
+
+msgid "Unit"
+msgstr "Unit"
+
+msgid "Activates"
+msgstr "Activates"
+
+# Group Messages
+msgid "Service Groups"
+msgstr "Service Groups"
+
+msgid "Predefined Group Templates"
+msgstr "Predefined Group Templates"
+
+msgid "Services"
+msgstr "Services"
+
+msgid "Color"
+msgstr "Color"
+
+msgid "Icon"
+msgstr "Icon"
+
+msgid "Auto-start order"
+msgstr "Auto-start order"
+
+# Commands
+msgid "Filter by service type"
+msgstr "Filter by service type"
+
+msgid "Include inactive services"
+msgstr "Include inactive services"
+
+msgid "Include inactive timers"
+msgstr "Include inactive timers"
+
+msgid "Include inactive sockets"
+msgstr "Include inactive sockets"
+
+msgid "Number of log lines to show"
+msgstr "Number of log lines to show"
+
+msgid "Group description"
+msgstr "Group description"
+
+msgid "Group color (hex)"
+msgstr "Group color (hex)"
+
+msgid "Group icon (emoji)"
+msgstr "Group icon (emoji)"
+
+msgid "Show time taken by each unit"
+msgstr "Show time taken by each unit"
+
+msgid "Show critical chain"
+msgstr "Show critical chain"
+
+# Version
+msgid "Show the version and exit."
+msgstr "Show the version and exit."

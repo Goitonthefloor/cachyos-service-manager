@@ -6,6 +6,7 @@ import logging
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
 
 from .service import ServiceState
 
@@ -289,6 +290,145 @@ class ServiceManager:
             logger.error(f"Error retrieving logs for {service_name}: {e}")
             return f"Error retrieving logs: {e}"
 
+    def get_timer_status(self, timer_name: str) -> Optional[ServiceInfo]:
+        """Get detailed status of a timer.
+
+        Args:
+            timer_name: Timer name (e.g., 'apt-daily.timer')
+
+        Returns:
+            ServiceInfo or None
+        """
+        try:
+            if not timer_name.endswith('.timer'):
+                timer_name += '.timer'
+
+            show_result = subprocess.run(
+                ['systemctl', 'show', timer_name],
+                capture_output=True, text=True, timeout=self._timeout
+            )
+
+            show_data = {}
+            for line in show_result.stdout.split('\n'):
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    show_data[key] = value
+
+            state = self._map_state(show_data.get('ActiveState', 'unknown'))
+            enabled = show_data.get('UnitFileState', 'disabled') in ['enabled', 'static']
+
+            service_info = ServiceInfo(
+                name=timer_name,
+                display_name=timer_name.replace('.timer', ''),
+                state=state,
+                enabled=enabled,
+                description=show_data.get('Description', ''),
+                loaded=show_data.get('LoadState', 'not-found') == 'loaded',
+                active_state=show_data.get('ActiveState', 'unknown'),
+                sub_state=show_data.get('SubState', 'unknown'),
+                pid=None,
+                memory=None,
+                cpu=None
+            )
+
+            self._cache[timer_name] = service_info
+            return service_info
+
+        except subprocess.TimeoutExpired:
+            logger.error(f"Timeout getting timer status for {timer_name} after {self._timeout}s")
+            return None
+        except Exception as e:
+            logger.error(f"Error getting timer status for {timer_name}: {e}")
+            return None
+
+    def get_socket_status(self, socket_name: str) -> Optional[ServiceInfo]:
+        """Get detailed status of a socket.
+
+        Args:
+            socket_name: Socket name (e.g., 'docker.socket')
+
+        Returns:
+            ServiceInfo or None
+        """
+        try:
+            if not socket_name.endswith('.socket'):
+                socket_name += '.socket'
+
+            show_result = subprocess.run(
+                ['systemctl', 'show', socket_name],
+                capture_output=True, text=True, timeout=self._timeout
+            )
+
+            show_data = {}
+            for line in show_result.stdout.split('\n'):
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    show_data[key] = value
+
+            state = self._map_state(show_data.get('ActiveState', 'unknown'))
+            enabled = show_data.get('UnitFileState', 'disabled') in ['enabled', 'static']
+
+            service_info = ServiceInfo(
+                name=socket_name,
+                display_name=socket_name.replace('.socket', ''),
+                state=state,
+                enabled=enabled,
+                description=show_data.get('Description', ''),
+                loaded=show_data.get('LoadState', 'not-found') == 'loaded',
+                active_state=show_data.get('ActiveState', 'unknown'),
+                sub_state=show_data.get('SubState', 'unknown'),
+                pid=None,
+                memory=None,
+                cpu=None
+            )
+
+            self._cache[socket_name] = service_info
+            return service_info
+
+        except subprocess.TimeoutExpired:
+            logger.error(f"Timeout getting socket status for {socket_name} after {self._timeout}s")
+            return None
+        except Exception as e:
+            logger.error(f"Error getting socket status for {socket_name}: {e}")
+            return None
+
+    def list_timers(self, show_inactive: bool = True) -> List[ServiceInfo]:
+        """List all systemd timers."""
+        return self.list_all_services(service_type=ServiceType.TIMER, show_inactive=show_inactive)
+
+    def list_sockets(self, show_inactive: bool = True) -> List[ServiceInfo]:
+        """List all systemd sockets."""
+        return self.list_all_services(service_type=ServiceType.SOCKET, show_inactive=show_inactive)
+
+    def get_next_timer_activations(self) -> List[Dict[str, str]]:
+        """Get next activation times for all timers."""
+        try:
+            result = subprocess.run(
+                ['systemctl', 'list-timers', '--all', '--no-pager', '--no-legend'],
+                capture_output=True, text=True, timeout=self._timeout
+            )
+            if result.returncode != 0:
+                return []
+
+            timers = []
+            for line in result.stdout.strip().split('\n'):
+                if not line.strip() or 'NEXT' in line:
+                    continue
+                parts = line.split()
+                if len(parts) >= 5:
+                    timers.append({
+                        'next': parts[0],
+                        'left': parts[1],
+                        'last': parts[2],
+                        'passed': parts[3],
+                        'unit': parts[4],
+                        'activates': parts[5] if len(parts) > 5 else ''
+                    })
+            return timers
+        except Exception as e:
+            logger.error(f"Error getting timer activations: {e}")
+            return []
+
     def search_services(self, query: str, services: List[ServiceInfo]) -> List[ServiceInfo]:
         """Search services by name or description.
 
@@ -434,3 +574,118 @@ class ServiceManager:
         except Exception as e:
             logger.error(f"Systemd not accessible: {e}")
             return False
+
+    def backup_services(self, service_names: List[str], output_path: str) -> Tuple[bool, str]:
+        """Backup service configurations to a file.
+
+        Args:
+            service_names: List of service names to backup
+            output_path: Path to output backup file
+
+        Returns:
+            Tuple of (success, message)
+        """
+        import json
+        try:
+            backup_data = {
+                'version': '1.0',
+                'services': {}
+            }
+
+            for service_name in service_names:
+                if not service_name.endswith('.service'):
+                    service_name += '.service'
+
+                # Get unit file content
+                result = subprocess.run(
+                    ['systemctl', 'cat', service_name],
+                    capture_output=True, text=True, timeout=self._timeout
+                )
+
+                if result.returncode == 0:
+                    backup_data['services'][service_name] = {
+                        'unit_file': result.stdout,
+                        'enabled': self._is_enabled(service_name)
+                    }
+
+            with open(output_path, 'w') as f:
+                json.dump(backup_data, f, indent=2)
+
+            logger.info(f"Backed up {len(backup_data['services'])} services to {output_path}")
+            return True, f"Successfully backed up {len(backup_data['services'])} services to {output_path}"
+
+        except Exception as e:
+            logger.error(f"Error backing up services: {e}")
+            return False, f"Error backing up services: {e}"
+
+    def restore_services(self, input_path: str) -> Tuple[bool, str]:
+        """Restore service configurations from a backup file.
+
+        Args:
+            input_path: Path to backup file
+
+        Returns:
+            Tuple of (success, message)
+        """
+        import json
+        try:
+            with open(input_path, 'r') as f:
+                backup_data = json.load(f)
+
+            restored = 0
+            for service_name, data in backup_data.get('services', {}).items():
+                unit_file = data.get('unit_file', '')
+                if not unit_file:
+                    continue
+
+                # Write unit file
+                unit_path = Path(f"/etc/systemd/system/{service_name}")
+                try:
+                    unit_path.write_text(unit_file)
+                except PermissionError:
+                    # Try user directory
+                    user_unit_dir = Path.home() / '.config' / 'systemd' / 'user'
+                    user_unit_dir.mkdir(parents=True, exist_ok=True)
+                    unit_path = user_unit_dir / service_name
+                    unit_path.write_text(unit_file)
+
+                # Reload systemd
+                subprocess.run(['systemctl', 'daemon-reload'], capture_output=True)
+
+                # Restore enabled state
+                if data.get('enabled', False):
+                    subprocess.run(['systemctl', 'enable', service_name], capture_output=True)
+
+                restored += 1
+
+            logger.info(f"Restored {restored} services from {input_path}")
+            return True, f"Successfully restored {restored} services from {input_path}"
+
+        except Exception as e:
+            logger.error(f"Error restoring services: {e}")
+            return False, f"Error restoring services: {e}"
+
+    def get_unit_file(self, service_name: str) -> Optional[str]:
+        """Get the unit file content for a service.
+
+        Args:
+            service_name: Service name
+
+        Returns:
+            Unit file content or None
+        """
+        try:
+            if not service_name.endswith('.service'):
+                service_name += '.service'
+
+            result = subprocess.run(
+                ['systemctl', 'cat', service_name],
+                capture_output=True, text=True, timeout=self._timeout
+            )
+
+            if result.returncode == 0:
+                return result.stdout
+            return None
+        except Exception as e:
+            logger.error(f"Error getting unit file for {service_name}: {e}")
+            return None

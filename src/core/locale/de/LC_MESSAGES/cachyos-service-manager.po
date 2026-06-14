@@ -1,0 +1,278 @@
+# German translations for CachyOS Service Manager
+msgid ""
+msgstr ""
+"Project-Id-Version: cachyos-service-manager 0.2.2\n"
+"Report-Msgid-Bugs-To: https://github.com/Goitonthefloor/cachyos-service-manager/issues\n"
+"POT-Creation-Date: 2025-06-14\n"
+"PO-Revision-Date: 2025-06-14\n"
+"Last-Translator: Rolf Greger\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# CLI Messages
+msgid "CachyOS Service Manager CLI."
+msgstr "CachyOS Service Manager CLI."
+
+msgid "List all services."
+msgstr "Alle Dienste auflisten."
+
+msgid "Show service status."
+msgstr "Dienststatus anzeigen."
+
+msgid "Start a service."
+msgstr "Einen Dienst starten."
+
+msgid "Stop a service."
+msgstr "Einen Dienst stoppen."
+
+msgid "Restart a service."
+msgstr "Einen Dienst neu starten."
+
+msgid "Enable a service (autostart)."
+msgstr "Einen Dienst aktivieren (Autostart)."
+
+msgid "Disable a service (no autostart)."
+msgstr "Einen Dienst deaktivieren (kein Autostart)."
+
+msgid "Show service logs."
+msgstr "Dienstlogs anzeigen."
+
+msgid "Manage service groups."
+msgstr "Dienstgruppen verwalten."
+
+msgid "Run systemd-analyze for boot performance analysis."
+msgstr "systemd-analyze für Boot-Performance-Analyse ausführen."
+
+msgid "Backup service unit files and enabled state to JSON."
+msgstr "Dienst-Unit-Dateien und aktivierten Status als JSON sichern."
+
+msgid "Restore service unit files and enabled state from JSON backup."
+msgstr "Dienst-Unit-Dateien und aktivierten Status aus JSON-Backup wiederherstellen."
+
+msgid "Show unit file content for a service."
+msgstr "Unit-Datei-Inhalt für einen Dienst anzeigen."
+
+msgid "Show service dependencies."
+msgstr "Dienstabhängigkeiten anzeigen."
+
+msgid "Show reverse dependencies (what depends on this service)."
+msgstr "Rückwärts-Abhängigkeiten anzeigen (was hängt von diesem Dienst ab)."
+
+msgid "List all systemd timers."
+msgstr "Alle systemd-Timer auflisten."
+
+msgid "Show timer status."
+msgstr "Timer-Status anzeigen."
+
+msgid "Show next timer activations."
+msgstr "Nächste Timer-Aktivierungen anzeigen."
+
+msgid "List all systemd sockets."
+msgstr "Alle systemd-Sockets auflisten."
+
+msgid "Show socket status."
+msgstr "Socket-Status anzeigen."
+
+# Status Messages
+msgid "No services found."
+msgstr "Keine Dienste gefunden."
+
+msgid "No timers found."
+msgstr "Keine Timer gefunden."
+
+msgid "No sockets found."
+msgstr "Keine Sockets gefunden."
+
+msgid "No groups found."
+msgstr "Keine Gruppen gefunden."
+
+msgid "No timer activations found."
+msgstr "Keine Timer-Aktivierungen gefunden."
+
+msgid "No logs available."
+msgstr "Keine Logs verfügbar."
+
+msgid "Service '%s' not found."
+msgstr "Dienst '%s' nicht gefunden."
+
+msgid "Timer '%s' not found."
+msgstr "Timer '%s' nicht gefunden."
+
+msgid "Socket '%s' not found."
+msgstr "Socket '%s' nicht gefunden."
+
+msgid "Group '%s' not found"
+msgstr "Gruppe '%s' nicht gefunden"
+
+msgid "Template '%s' not found"
+msgstr "Vorlage '%s' nicht gefunden"
+
+# Success Messages
+msgid "Successfully started %s"
+msgstr "%s erfolgreich gestartet"
+
+msgid "Successfully stopped %s"
+msgstr "%s erfolgreich gestoppt"
+
+msgid "Successfully restarted %s"
+msgstr "%s erfolgreich neu gestartet"
+
+msgid "Successfully enabled %s"
+msgstr "%s erfolgreich aktiviert"
+
+msgid "Successfully disabled %s"
+msgstr "%s erfolgreich deaktiviert"
+
+msgid "Created group '%s' with %d services"
+msgstr "Gruppe '%s' mit %d Diensten erstellt"
+
+msgid "Deleted group '%s'"
+msgstr "Gruppe '%s' gelöscht"
+
+msgid "Created group '%s' from template with %d services"
+msgstr "Gruppe '%s' aus Vorlage mit %d Diensten erstellt"
+
+msgid "Exported group '%s' to %s"
+msgstr "Gruppe '%s' nach %s exportiert"
+
+msgid "Imported group '%s'"
+msgstr "Gruppe '%s' importiert"
+
+msgid "Successfully backed up %d services to %s"
+msgstr "%d Dienste erfolgreich nach %s gesichert"
+
+msgid "Successfully restored %d services from %s"
+msgstr "%d Dienste erfolgreich aus %s wiederhergestellt"
+
+# Error Messages
+msgid "Error: %s"
+msgstr "Fehler: %s"
+
+msgid "Timeout executing %s on %s"
+msgstr "Timeout beim Ausführen von %s auf %s"
+
+msgid "Failed to %s %s: %s"
+msgstr "%s %s fehlgeschlagen: %s"
+
+msgid "systemd-analyze not found. Is systemd installed?"
+msgstr "systemd-analyze nicht gefunden. Ist systemd installiert?"
+
+msgid "Timeout running systemd-analyze"
+msgstr "Timeout beim Ausführen von systemd-analyze"
+
+# Status Display
+msgid "active"
+msgstr "aktiv"
+
+msgid "inactive"
+msgstr "inaktiv"
+
+msgid "failed"
+msgstr "fehlgeschlagen"
+
+msgid "activating"
+msgstr "wird aktiviert"
+
+msgid "deactivating"
+msgstr "wird deaktiviert"
+
+msgid "unknown"
+msgstr "unbekannt"
+
+# Table Headers
+msgid "Name"
+msgstr "Name"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Enabled"
+msgstr "Aktiviert"
+
+msgid "Description"
+msgstr "Beschreibung"
+
+msgid "CPU %"
+msgstr "CPU %"
+
+msgid "RAM MB"
+msgstr "RAM MB"
+
+msgid "Actions"
+msgstr "Aktionen"
+
+msgid "Next"
+msgstr "Nächster"
+
+msgid "Left"
+msgstr "Verbleibend"
+
+msgid "Last"
+msgstr "Letzter"
+
+msgid "Passed"
+msgstr "Verstrichen"
+
+msgid "Unit"
+msgstr "Unit"
+
+msgid "Activates"
+msgstr "Aktiviert"
+
+# Group Messages
+msgid "Service Groups"
+msgstr "Dienstgruppen"
+
+msgid "Predefined Group Templates"
+msgstr "Vordefinierte Gruppenvorlagen"
+
+msgid "Services"
+msgstr "Dienste"
+
+msgid "Color"
+msgstr "Farbe"
+
+msgid "Icon"
+msgstr "Symbol"
+
+msgid "Auto-start order"
+msgstr "Auto-Start-Reihenfolge"
+
+# Commands
+msgid "Filter by service type"
+msgstr "Nach Diensttyp filtern"
+
+msgid "Include inactive services"
+msgstr "Inaktive Dienste einbeziehen"
+
+msgid "Include inactive timers"
+msgstr "Inaktive Timer einbeziehen"
+
+msgid "Include inactive sockets"
+msgstr "Inaktive Sockets einbeziehen"
+
+msgid "Number of log lines to show"
+msgstr "Anzahl der anzuzeigenden Log-Zeilen"
+
+msgid "Group description"
+msgstr "Gruppenbeschreibung"
+
+msgid "Group color (hex)"
+msgstr "Gruppenfarbe (hex)"
+
+msgid "Group icon (emoji)"
+msgstr "Gruppensymbol (Emoji)"
+
+msgid "Show time taken by each unit"
+msgstr "Zeit pro Unit anzeigen"
+
+msgid "Show critical chain"
+msgstr "Kritischen Pfad anzeigen"
+
+# Version
+msgid "Show the version and exit."
+msgstr "Version anzeigen und beenden."
