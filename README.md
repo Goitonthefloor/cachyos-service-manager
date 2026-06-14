@@ -39,6 +39,12 @@ CachyOS Service Manager ist ein leistungsstarkes Werkzeug zur Verwaltung von sys
 - ⚡ **Performance** - Intelligentes Caching (2s TTL), Batch-PID-Fetching, QTableWidgetItem-Reuse
 - 📝 **Strukturiertes Logging** - Ersetzt alle print()-Statements
 - ✅ **34 Unit Tests** - Vollständige Testabdeckung der Kernfunktionalität
+- 🌍 **Multi-Language (i18n)** - Englisch & Deutsch mit automatischer Locale-Erkennung
+- ⏰ **Timer-Verwaltung** - Timers auflisten, Status, nächste Aktivierungen
+- 🔌 **Socket-Verwaltung** - Sockets auflisten und Status anzeigen
+- 💾 **Backup/Restore** - Unit-Files und Enabled-State als JSON sichern/wiederherstellen
+- 🔗 **Abhängigkeitsvisualisierung** - Forward & Reverse Dependencies (systemctl list-dependencies)
+- 📊 **systemd-analyze Integration** - Boot-Performance (blame, critical-chain)
 
 ## 🚀 Installation
 
@@ -222,11 +228,42 @@ cachy-services logs nginx --lines 100
 cachy-services enable nginx
 cachy-services disable nginx
 
-# Gruppen verwalten (in Entwicklung)
-cachy-services group create "Web Stack" nginx postgresql redis
+# Timer-Verwaltung
+cachy-services timers --all
+cachy-services timer-status systemd-tmpfiles-clean.timer
+cachy-services timer-list
+
+# Socket-Verwaltung
+cachy-services sockets --all
+cachy-services socket-status docker.socket
+
+# systemd-analyze Integration
+cachy-services analyze              # Boot-Zeit
+cachy-services analyze --blame      # Zeit pro Unit
+cachy-services analyze --critical-chain  # Kritischer Pfad
+
+# Abhängigkeiten
+cachy-services dependencies nginx
+cachy-services dependents nginx
+
+# Backup/Restore
+cachy-services backup nginx postgresql redis -o backup.json
+cachy-services restore backup.json
+cachy-services unit-file nginx
+
+# Gruppen verwalten
+cachy-services group create "Web Stack" nginx postgresql redis -d "Web Stack" -c "#27ae60" -i "🌍"
+cachy-services group list
+cachy-services group show "Web Stack"
+cachy-services group templates
+cachy-services group create-from-template "Web Services"
 cachy-services group start "Web Stack"
 cachy-services group stop "Web Stack"
-cachy-services group list
+cachy-services group restart "Web Stack"
+cachy-services group enable "Web Stack"
+cachy-services group disable "Web Stack"
+cachy-services group export "Web Stack" web-stack.json
+cachy-services group import web-stack.json
 ```
 
 ## 🏗️ Architektur
@@ -248,7 +285,11 @@ cachyos-service-manager/
 │   │   ├── service_group.py      # ServiceGroup & ServiceGroupManager
 │   │   ├── resource_monitor.py   # CPU/RAM Monitoring (psutil + batch PID)
 │   │   ├── monitor.py            # Async MonitoringEngine (D-Bus)
+│   │   ├── i18n.py               # Internationalization (gettext)
 │   │   └── __init__.py
+│   ├── locale/                   # Übersetzungen
+│   │   ├── en/LC_MESSAGES/       # Englisch
+│   │   └── de/LC_MESSAGES/       # Deutsch
 │   ├── cli/                      # CLI-Modul (Legacy)
 │   └── utils/                    # Hilfsfunktionen
 ├── tests/
@@ -296,6 +337,20 @@ filtered = manager.search_services('docker', services)
 # Statistiken
 stats = manager.get_stats(services)
 # Returns: {'total': 150, 'active': 45, 'inactive': 100, 'failed': 5, 'enabled': 50}
+
+# Timer-Verwaltung
+timers = manager.list_timers()
+timer_info = manager.get_timer_status('apt-daily.timer')
+next_activations = manager.get_next_timer_activations()
+
+# Socket-Verwaltung
+sockets = manager.list_sockets()
+socket_info = manager.get_socket_status('docker.socket')
+
+# Backup/Restore
+success, msg = manager.backup_services(['nginx', 'postgresql'], 'backup.json')
+success, msg = manager.restore_services('backup.json')
+unit_content = manager.get_unit_file('nginx')
 
 # Health Check
 if manager.check_systemd_accessible():
@@ -465,11 +520,48 @@ pytest tests/test_core.py::TestServiceManager::test_map_state -v
 | **systemd (Sync)** | subprocess + systemctl |
 | **systemd (Async)** | dbus-python |
 | **Monitoring** | psutil |
+| **i18n** | gettext |
 | **Tests** | pytest + pytest-cov |
 | **Code-Qualität** | ruff, mypy, black |
 | **Packaging** | setuptools (src-layout) |
 
-## 📊 Performance-Optimierungen (v0.2.2+)
+## 🌍 Internationalization (i18n)
+
+Das Projekt unterstützt **Englisch (en)** und **Deutsch (de)** mit automatischer Locale-Erkennung.
+
+### API
+
+```python
+from core import _, set_language, get_language, init_i18n
+
+# Initialisierung (automatisch beim Import)
+init_i18n()
+
+# Sprache manuell setzen
+set_language('de')  # oder 'en'
+
+# Aktuelle Sprache abfragen
+current_lang = get_language()
+
+# Strings übersetzen
+print(_("No services found."))  # "Keine Dienste gefunden." (bei de)
+print(_("Successfully started %s") % "nginx")  # "nginx erfolgreich gestartet"
+```
+
+### Übersetzungen hinzufügen
+
+1. `.po` Datei bearbeiten: `src/core/locale/<lang>/LC_MESSAGES/cachyos-service-manager.po`
+2. Kompilieren: `msgfmt -o cachyos-service-manager.mo cachyos-service-manager.po`
+3. Oder mit Python: `polib.pofile(...).save_as_mofile(...)`
+
+### Unterstützte Sprachen
+
+| Code | Sprache | Status |
+|------|---------|--------|
+| en | English | ✅ Vollständig |
+| de | Deutsch | ✅ Vollständig |
+
+## 📊 Performance-Optimierungen (v0.3.0+)
 
 | Optimierung | Vorher | Nachher |
 |-------------|--------|---------|
@@ -478,6 +570,9 @@ pytest tests/test_core.py::TestServiceManager::test_map_state -v
 | **Service-Liste** | Immer frisch von systemd | **2s TTL Cache** |
 | **GUI Tabellen-Update** | Neue QTableWidgetItems alle 5s | **Items wiederverwenden** (in-place update) |
 | **Memory Leak** | MonitoringEngine sammelte stale Services | **cleanup_stale_services()** im Loop |
+| **Timer/Socket Status** | Nicht verfügbar | **Dedizierte Methoden** mit Caching |
+| **Backup/Restore** | Manuell | **Ein-Kommando** JSON-basiert |
+| **Abhängigkeiten** | `systemctl list-dependencies` manuell | **CLI Commands** `dependencies`/`dependents` |
 
 ## 🤝 Mitwirken
 
@@ -531,15 +626,15 @@ Dieses Projekt ist unter der **GPL-3.0-or-later** Lizenz lizenziert. Siehe [LICE
 - [x] **Strukturiertes Logging**
 - [x] **34 Unit Tests**
 - [x] **AUR-Package**
-- [ ] CLI Groups Support (vollständig)
-- [ ] Service-Abhängigkeitsvisualisierung
-- [ ] Timer-Verwaltung
-- [ ] Socket-Verwaltung
-- [ ] Backup/Restore von Service-Konfigurationen
-- [ ] Multi-Language Support (i18n)
-- [ ] Import/Export von Gruppen
-- [ ] Systemd Unit Editor
-- [ ] systemd-analyze Integration
+- [x] **CLI Groups Support** (vollständig)
+- [x] **Service-Abhängigkeitsvisualisierung** (forward + reverse)
+- [x] **Timer-Verwaltung** (list, status, next activations)
+- [x] **Socket-Verwaltung** (list, status)
+- [x] **Backup/Restore** von Service-Konfigurationen
+- [x] **Multi-Language Support (i18n)** (EN/DE)
+- [x] **Import/Export von Gruppen** (JSON)
+- [x] **Systemd Unit Editor** (unit-file command)
+- [x] **systemd-analyze Integration** (blame, critical-chain)
 
 ---
 
